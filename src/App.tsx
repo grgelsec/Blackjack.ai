@@ -1,10 +1,11 @@
+import Bet from "./components/playerbets"
 
 function App() {
   
 
   return (
     <>
-    <h1></h1>
+    <Bet></Bet>
     </>
   )
 }
