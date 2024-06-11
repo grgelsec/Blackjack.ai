@@ -1,4 +1,7 @@
-import Testing from "./components/test"
+//import MoneyRecord from "./components/betstotalParent"
+
+import GameControls from "./components/gameParent"
+
 
 function App() {
   
@@ -6,7 +9,7 @@ function App() {
   return (
     <>
     <div className="flex justify-center">
-    <Testing />
+      <GameControls/>
     </div>
     </>
   )

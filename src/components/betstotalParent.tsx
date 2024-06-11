@@ -1,7 +1,7 @@
 import { useState } from "react";
-import Bet from "./playerbets";
+import Bet from "./bets";
 
-export default function Testing(){
+export default function MoneyRecord(){
 
     const [betAmount, setBetAmount] = useState(0);
 
