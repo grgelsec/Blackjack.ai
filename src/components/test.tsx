@@ -5,13 +5,13 @@ export default function Testing(){
 
     const [betAmount, setBetAmount] = useState(0);
 
-    function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    function handleChangeBet(e: React.ChangeEvent<HTMLInputElement>) {
         setBetAmount(Number(e.target.value))
     }
 
     return(
         <>
-            <Bet betAmount={betAmount} handleChange={handleChange} />
+            <Bet betAmount={betAmount} handleChangeBet={handleChangeBet} />
         </>
     );
 }

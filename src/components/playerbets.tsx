@@ -1,10 +1,9 @@
-
 interface BetProps {
     betAmount: number;
-    handleChange: React.ChangeEventHandler<HTMLInputElement>;
+    handleChangeBet: React.ChangeEventHandler<HTMLInputElement>;
 }
 
-export default function Bet({ betAmount, handleChange }: BetProps){
+export default function Bet({ betAmount, handleChangeBet }: BetProps){
 
     return (
         <>
@@ -12,12 +11,13 @@ export default function Bet({ betAmount, handleChange }: BetProps){
             <input 
             type="text" 
             value={betAmount} 
-            onChange={handleChange} 
+            onChange={handleChangeBet} 
             className="px-2 py-1 rounded-xl bg-white font-mono"/>
             <button
             type="submit"
             className="px-4 py-4 rounded-xl bg-white">Submit</button>
         </form>
+        <h1 className="text-white text-2xl font-mono">{betAmount}</h1>
         </>
     );
 
