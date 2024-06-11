@@ -1,11 +1,13 @@
-import Bet from "./components/playerbets"
+import Testing from "./components/test"
 
 function App() {
   
 
   return (
     <>
-    <Bet></Bet>
+    <div className="flex justify-center">
+    <Testing />
+    </div>
     </>
   )
 }
