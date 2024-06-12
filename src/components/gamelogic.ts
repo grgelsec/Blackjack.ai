@@ -26,7 +26,7 @@ const cardCollection: card[] = [
 ]
 
 
-const myCard = cardCollection[getRandomInt(12)];
+const getCard = cardCollection[getRandomInt(12)];
 
 //TODO: Maybe need to make a hook that returns a player hand and a dealer hand.
 //TODO: Need to make a function that generates a card and subtracts from the count
