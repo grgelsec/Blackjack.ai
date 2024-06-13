@@ -6,9 +6,15 @@ type card = {
 
 interface ManageProps {
   hit: number;
+  playerHand: card[];
+  setPlayerHand: React.Dispatch<React.SetStateAction<card[]>>;
 }
 
-export default function ManageCards({ hit }: ManageProps) {
+export default function ManageCards({
+  hit,
+  playerHand,
+  setPlayerHand,
+}: ManageProps) {
   const cardCollection: card[] = [
     { rank: 1, count: 3, suite: "one" },
     { rank: 2, count: 3, suite: "two" },
@@ -38,11 +44,11 @@ export default function ManageCards({ hit }: ManageProps) {
     }
   }
 
-  function addMultipleCards(hand: card[], handCount: number) {
-    for (let i = 1; i <= handCount; i++) {
-      addCardToHand(hand);
-    }
-  }
+  //   function addMultipleCards(hand: card[], handCount: number) {
+  //     for (let i = 1; i <= handCount; i++) {
+  //       addCardToHand(hand);
+  //     }
+  //   }
 
   //Game Logic
 
@@ -52,13 +58,9 @@ export default function ManageCards({ hit }: ManageProps) {
     }
   }
 
-  const playerHand: card[] = [];
-
   ifPlayerHits(playerHand);
-
+  setPlayerHand(playerHand);
   console.log(playerHand);
-
-  //lift state of cards to game parent
 
   return (
     <>
