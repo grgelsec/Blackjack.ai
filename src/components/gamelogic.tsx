@@ -52,18 +52,30 @@ export default function ManageCards({
     }
   }
 
+  function ifPlayerHits(hand: card[]) {
+    if (hit == 1) {
+      return addCardToHand(hand);
+    }
+  }
+
   //   function addMultipleCards(hand: card[], handCount: number) {
   //     for (let i = 1; i <= handCount; i++) {
   //       addCardToHand(hand);
   //     }
   //   }
 
-  //If the the user selects hit, add a card to the hand.
-  function ifPlayerHits(hand: card[]) {
-    if (hit == 1) {
-      return addCardToHand(hand);
-    }
-  }
+  /*
+   game starts and the cards are dealt to the user and dealer(bot)
+   turn is 1 (user)
+   if player selects hit or stay, set hit to 1 or stay to 1
+   set turn to 0
+   delay for a second or two
+   need to calculate the sum of the player deck
+   display dealers second card
+   if dealer sum is 16 or less, they hit, if sum is > 21, they bust
+   if dealter sum is 17 or more, the stay. if user or dealer is closer to 21 then they win
+   when turn is 0, then the robot does its thing
+   */
 
   ifPlayerHits(playerHand);
   console.log(playerHand);
