@@ -25,6 +25,12 @@ export default function GameControls() {
     }, 1);
   }
 
+  //   function handleStay() {
+  //     setStayChoice(1);
+
+  //     setTimeout(())
+  //   }
+
   return (
     <>
       <HitOption hit={hit} handleHit={handleHit} />
