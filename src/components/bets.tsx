@@ -3,8 +3,7 @@ interface BetProps {
   handleChangeBet: React.ChangeEventHandler<HTMLInputElement>;
 }
 
-//recieve alert whether player won the round or busted. if they won then add or subract from their balance
-
+//component keeps track of money and displays it to the player
 export default function Bet({ betAmount, handleChangeBet }: BetProps) {
   return (
     <>
