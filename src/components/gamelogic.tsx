@@ -14,6 +14,8 @@ interface ManageProps {
   setDealerHand: React.Dispatch<React.SetStateAction<card[]>>;
 }
 
+//TODO: LOOK AT DEALER COUNTS AND PLAYER COUNTS
+
 export default function ManageCards({
   hit,
   turn,
