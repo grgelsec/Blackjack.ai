@@ -12,8 +12,6 @@ interface ManageProps {
   setPlayerHand: React.Dispatch<React.SetStateAction<card[]>>;
 }
 
-//TODO: change the count if there is a duplicate card, currently not working.
-
 export default function ManageCards({
   hit,
   turn,
@@ -43,8 +41,8 @@ export default function ManageCards({
     return Math.floor(Math.random() * max + 1);
   }
 
+  //search array to see if it contains a card with the same suite as the new card
   function findMatchingSuite(hand: card[], newCard: card) {
-    //search array to see if it contains a card with the same suite as the new card
     for (let i = 0; i < hand.length; i++) {
       if (hand[i].suite == newCard.suite) {
         newCard.count = newCard.count - 1;
@@ -52,9 +50,7 @@ export default function ManageCards({
     }
   }
 
-  //if the news card is equal to a card inside the array then the count needs to go down again
-
-  //adds card depending on the count
+  //adds card and adjusts the count accoding to exisitng cards in hand.
   function addCardToHand(hand: card[]) {
     const cardIndex = getRandomInt(12);
     const generatedCard = cardCollection[cardIndex];
@@ -90,6 +86,7 @@ export default function ManageCards({
    when turn is 0, then the robot does its thing
    */
 
+  //NEED TO DO SAME THING FOR DEALER HAND
   ifPlayerHits(playerHand);
   console.log(playerHand);
 
