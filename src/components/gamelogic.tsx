@@ -43,6 +43,12 @@ export default function ManageCards({
     return Math.floor(Math.random() * max + 1);
   }
 
+  function findMatchingSuite(hand: card[], newCard: card) {
+    //search array to see if it contains the same card
+  }
+
+  //if the news card is equal to a card inside the array then the count needs to go down again
+
   //adds card depending on the count
   function addCardToHand(hand: card[]) {
     const cardIndex = getRandomInt(12);
@@ -50,9 +56,10 @@ export default function ManageCards({
     if (generatedCard.count > 0) {
       generatedCard.count = generatedCard.count - 1;
       hand.push(generatedCard);
-    }
-    if (hand.length > 0 && hand[length].suite == generatedCard.suite) {
-      hand[length].count = hand[length].count - 1;
+      //if the hand already includes a card with the suite
+      // if () {
+
+      // }
     }
   }
 
