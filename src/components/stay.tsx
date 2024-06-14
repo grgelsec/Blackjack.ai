@@ -13,7 +13,7 @@ export default function StayOption({ stay, handleStay }: StayProps) {
         onClick={handleStay}
         className="p-4 bg-white rounded-xl font-mono"
       >
-        Stay {stay}
+        Stay
       </button>
     </>
   );
