@@ -15,6 +15,7 @@ export default function GameControls() {
   const [hit, setHitChoice] = useState(0);
   const [stay, setStayChoice] = useState(0);
   const [playerHand, setPlayerHand] = useState<card[]>([]);
+  const [dealerHand, setDealerHand] = useState<card[]>([]);
   const [turn, setTurn] = useState(0);
 
   //indicates if player selects hit and resets
@@ -43,6 +44,8 @@ export default function GameControls() {
         hit={hit}
         playerHand={playerHand}
         setPlayerHand={setPlayerHand}
+        dealerHand={dealerHand}
+        setDealerHand={setDealerHand}
         turn={turn}
       />
     </>

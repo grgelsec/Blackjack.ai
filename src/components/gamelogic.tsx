@@ -10,6 +10,8 @@ interface ManageProps {
   turn: number;
   playerHand: card[];
   setPlayerHand: React.Dispatch<React.SetStateAction<card[]>>;
+  dealerHand: card[];
+  setDealerHand: React.Dispatch<React.SetStateAction<card[]>>;
 }
 
 export default function ManageCards({
@@ -17,7 +19,14 @@ export default function ManageCards({
   turn,
   playerHand,
   setPlayerHand,
+  dealerHand,
+  setDealerHand,
 }: ManageProps) {
+  //selects a random index in cardCollection
+  const getRandomInt = (max: number) => {
+    return Math.floor(Math.random() * max + 1);
+  };
+
   //db of cards available to the user
   const cardCollection: card[] = [
     { rank: 1, count: 3, suite: "one" },
@@ -36,11 +45,6 @@ export default function ManageCards({
     { rank: getRandomInt(11), count: 3, suite: "ace" },
   ];
 
-  //selects a random index in cardCollection
-  const getRandomInt = (max: number) => {
-    return Math.floor(Math.random() * max + 1);
-  };
-
   //search array to see if it contains a card with the same suite as the new card
   const findMatchingSuite = (hand: card[], newCard: card) => {
     for (let i = 0; i < hand.length; i++) {
@@ -53,8 +57,10 @@ export default function ManageCards({
   //adds card and adjusts the count accoding to exisitng cards in hand.
   const addCardToHand = (hand: card[]) => {
     const cardIndex = getRandomInt(12);
-    const generatedCard = cardCollection[cardIndex];
-    if (generatedCard.count > 0) {
+    let generatedCard = cardCollection[cardIndex];
+    if (generatedCard.count <= 0) {
+      generatedCard = cardCollection[cardIndex];
+    } else if (generatedCard.count > 0) {
       generatedCard.count = generatedCard.count - 1;
       findMatchingSuite(hand, generatedCard);
       hand.push(generatedCard);
@@ -64,12 +70,6 @@ export default function ManageCards({
   const ifPlayerHits = (hand: card[]) => {
     if (hit == 1) {
       return addCardToHand(hand);
-    }
-  };
-
-  const addStartingCards = (hand: card[], handCount: number) => {
-    for (let i = 1; i <= handCount; i++) {
-      addCardToHand(hand);
     }
   };
 
@@ -87,8 +87,19 @@ export default function ManageCards({
    */
 
   //NEED TO DO SAME THING FOR DEALER HAND
+
+  //adds cards to player hand
+  addCardToHand(playerHand);
+  addCardToHand(playerHand);
+
+  //adds cards to dealer hand
+  addCardToHand(dealerHand);
+  addCardToHand(dealerHand);
+
+  //adds cards depending on player choice
   ifPlayerHits(playerHand);
   console.log(playerHand);
+  console.log(dealerHand);
 
   return (
     <>
