@@ -45,10 +45,14 @@ export default function ManageCards({
 
   //adds card depending on the count
   function addCardToHand(hand: card[]) {
-    const generatedCard = cardCollection[getRandomInt(12)];
+    const cardIndex = getRandomInt(12);
+    const generatedCard = cardCollection[cardIndex];
     if (generatedCard.count > 0) {
-      generatedCard.count - 1;
+      generatedCard.count = generatedCard.count - 1;
       hand.push(generatedCard);
+    }
+    if (hand.length > 0 && hand[length].suite == generatedCard.suite) {
+      hand[length].count = hand[length].count - 1;
     }
   }
 
