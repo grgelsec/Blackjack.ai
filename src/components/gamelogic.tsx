@@ -15,6 +15,7 @@ interface ManageProps {
 }
 
 //TODO: LOOK AT DEALER COUNTS AND PLAYER COUNTS
+//TODO: Current problem is that playerHand adn dealerHand counts are not the same
 
 export default function ManageCards({
   hit,
