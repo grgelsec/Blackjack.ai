@@ -8,18 +8,19 @@ type card = {
 interface ManageProps {
   hit: number;
   turn: number;
+  setTurn: React.Dispatch<React.SetStateAction<number>>;
   playerHand: card[];
   setPlayerHand: React.Dispatch<React.SetStateAction<card[]>>;
   dealerHand: card[];
   setDealerHand: React.Dispatch<React.SetStateAction<card[]>>;
-}
+  }
 
-//TODO: LOOK AT DEALER COUNTS AND PLAYER COUNTS
-//TODO: Current problem is that playerHand adn dealerHand counts are not the same
+//Was having a problem where i was keeping count of card copies and I wasnt accesing the actual card db to update the count. generated card was a copy and I needed card collection
 
 export default function ManageCards({
   hit,
   turn,
+  setTurn,
   playerHand,
   setPlayerHand,
   dealerHand,
@@ -49,31 +50,42 @@ export default function ManageCards({
   ];
 
   //search array to see if it contains a card with the same suite as the new card
+  //TODO: PROBLEM: subtracting for every duplicate it is finding in the hand
   const findMatchingSuite = (hand: card[], newCard: card) => {
+    let copiesFound = 0;
     for (let i = 0; i < hand.length; i++) {
       if (hand[i].suite == newCard.suite) {
+        copiesFound = copiesFound++
+        cardCollection[i].count = cardCollection[i].count - 1;
         newCard.count = newCard.count - 1;
       }
     }
   };
 
   //adds card and adjusts the count accoding to exisitng cards in hand.
-  const addCardToHand = (hand: card[]) => {
+
+  const addCardToHand = (handOne: card[], handTwo: card[], turn: number) => {
     const cardIndex = getRandomInt(12);
     let generatedCard = cardCollection[cardIndex];
-    if (generatedCard.count <= 0) {
+    if (cardCollection[cardIndex].count <= 0) {
       generatedCard = cardCollection[cardIndex];
-    } else if (generatedCard.count > 0) {
-      generatedCard.count = generatedCard.count - 1;
-      findMatchingSuite(hand, generatedCard);
-      hand.push(generatedCard);
+    } else if (cardCollection[cardIndex].count > 0) {
+      cardCollection[cardIndex].count = cardCollection[cardIndex].count - 1;
+      findMatchingSuite(handOne, generatedCard);
+      findMatchingSuite(handTwo, generatedCard);
+      if(turn == 1) {
+        handOne.push(generatedCard);
+      } else if (turn == 2) {
+        handTwo.push(generatedCard);
+      }
     }
   };
 
-  const ifPlayerHits = (hand: card[]) => {
+  const ifPlayerHits = (handOne: card[], handTwo: card[], turn: number) => {
     if (hit == 1) {
-      return addCardToHand(hand);
-    }
+      turn = 1
+      return addCardToHand(handOne, handTwo, turn);
+    } 
   };
 
   /*
@@ -89,18 +101,12 @@ export default function ManageCards({
    when turn is 0, then the robot does its thing
    */
 
-  //NEED TO DO SAME THING FOR DEALER HAND
-
-  //adds cards to player hand
-  addCardToHand(playerHand);
-  addCardToHand(playerHand);
-
-  //adds cards to dealer hand
-  addCardToHand(dealerHand);
-  addCardToHand(dealerHand);
-
   //adds cards depending on player choice
-  ifPlayerHits(playerHand);
+  console.log("Turn: " + turn + " Hit: " + hit)
+  console.log("Player hand: ")
+  addCardToHand(playerHand, dealerHand, 1)
+  console.log("Dealer hand: ")
+  addCardToHand(playerHand, dealerHand, 2)
   console.log(playerHand);
   console.log(dealerHand);
 
