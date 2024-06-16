@@ -15,7 +15,7 @@ interface ManageProps {
   setDealerHand: React.Dispatch<React.SetStateAction<card[]>>;
   }
 
-//Was having a problem where i was keeping count of card copies and I wasnt accesing the actual card db to update the count. generated card was a copy and I needed card collection
+//TODO: New problem, cards with count == 0 are being added to the hands.
 
 export default function ManageCards({
   hit,
@@ -50,12 +50,11 @@ export default function ManageCards({
   ];
 
   //search array to see if it contains a card with the same suite as the new card
-  //TODO: PROBLEM: subtracting for every duplicate it is finding in the hand
   const findMatchingSuite = (hand: card[], newCard: card) => {
-    let copiesFound = 0;
+    //let copiesFound = 0;
     for (let i = 0; i < hand.length; i++) {
-      if (hand[i].suite == newCard.suite) {
-        copiesFound = copiesFound++
+      if (hand[i].suite == newCard.suite && hand[i].count > 0) {
+        //copiesFound = copiesFound++
         cardCollection[i].count = cardCollection[i].count - 1;
         newCard.count = newCard.count - 1;
       }
