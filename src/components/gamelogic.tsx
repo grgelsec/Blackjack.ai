@@ -15,7 +15,7 @@ interface ManageProps {
   setDealerHand: React.Dispatch<React.SetStateAction<card[]>>;
   }
 
-//TODO: New problem, cards with count == 0 are being added to the hands.
+//TODO: New problem, cards with count == 0 are being added to the hands. And the rd duplicate of a card os subtrascting lower than 0.
 
 export default function ManageCards({
   hit,
