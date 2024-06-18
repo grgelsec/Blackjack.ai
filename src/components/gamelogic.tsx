@@ -13,9 +13,9 @@ interface ManageProps {
   setPlayerHand: React.Dispatch<React.SetStateAction<card[]>>;
   dealerHand: card[];
   setDealerHand: React.Dispatch<React.SetStateAction<card[]>>;
-  }
+}
 
-//TODO: New problem, cards with count == 0 are being added to the hands. And the rd duplicate of a card os subtrascting lower than 0.
+//TODO: New problem, cards with count == 0 are being added to the hands. And the duplicate of a card is subtracting lower than 0.
 
 export default function ManageCards({
   hit,
@@ -33,30 +33,37 @@ export default function ManageCards({
 
   //db of cards available to the user
   const cardCollection: card[] = [
-    { rank: 1, count: 3, suite: "one" },
-    { rank: 2, count: 3, suite: "two" },
-    { rank: 3, count: 3, suite: "three" },
-    { rank: 4, count: 3, suite: "four" },
-    { rank: 5, count: 3, suite: "five" },
-    { rank: 6, count: 3, suite: "six" },
-    { rank: 7, count: 3, suite: "seven" },
-    { rank: 8, count: 3, suite: "eight" },
-    { rank: 9, count: 3, suite: "nine" },
-    { rank: 10, count: 3, suite: "ten" },
-    { rank: 10, count: 3, suite: "jack" },
-    { rank: 10, count: 3, suite: "queen" },
-    { rank: 10, count: 3, suite: "king" },
-    { rank: getRandomInt(11), count: 3, suite: "ace" },
+    { rank: 1, count: 4, suite: "one" },
+    { rank: 2, count: 4, suite: "two" },
+    { rank: 3, count: 4, suite: "three" },
+    { rank: 4, count: 4, suite: "four" },
+    { rank: 5, count: 4, suite: "five" },
+    { rank: 6, count: 4, suite: "six" },
+    { rank: 7, count: 4, suite: "seven" },
+    { rank: 8, count: 4, suite: "eight" },
+    { rank: 9, count: 4, suite: "nine" },
+    { rank: 10, count: 4, suite: "ten" },
+    { rank: 10, count: 4, suite: "jack" },
+    { rank: 10, count: 4, suite: "queen" },
+    { rank: 10, count: 4, suite: "king" },
+    { rank: getRandomInt(11), count: 4, suite: "ace" },
   ];
 
+  // const removeEmptyCards = (cardCollection: card[]) => {
+  //   return cardCollection.filter((card) => card.count > 0);
+  // };
   //search array to see if it contains a card with the same suite as the new card
   const findMatchingSuite = (hand: card[], newCard: card) => {
-    //let copiesFound = 0;
+    //let duplicates = 0;
     for (let i = 0; i < hand.length; i++) {
       if (hand[i].suite == newCard.suite && hand[i].count > 0) {
-        //copiesFound = copiesFound++
-        cardCollection[i].count = cardCollection[i].count - 1;
-        newCard.count = newCard.count - 1;
+        //duplicates += 1;
+        //if (duplicates == 1) {
+        //cardCollection[i].count = cardCollection[i].count - 1;
+        newCard.count -= 1;
+        //} else if (duplicates == 2) {
+        //newCard.count -= 1;
+        //}
       }
     }
   };
@@ -64,27 +71,36 @@ export default function ManageCards({
   //adds card and adjusts the count accoding to exisitng cards in hand.
 
   const addCardToHand = (handOne: card[], handTwo: card[], turn: number) => {
-    const cardIndex = getRandomInt(12);
+    let cardIndex = getRandomInt(12);
     let generatedCard = cardCollection[cardIndex];
-    if (cardCollection[cardIndex].count <= 0) {
+    if (generatedCard.count == 0) {
+      cardIndex = getRandomInt(12);
       generatedCard = cardCollection[cardIndex];
-    } else if (cardCollection[cardIndex].count > 0) {
-      cardCollection[cardIndex].count = cardCollection[cardIndex].count - 1;
-      findMatchingSuite(handOne, generatedCard);
-      findMatchingSuite(handTwo, generatedCard);
-      if(turn == 1) {
-        handOne.push(generatedCard);
-      } else if (turn == 2) {
-        handTwo.push(generatedCard);
-      }
     }
+    generatedCard.count -= 1;
+    //cardCollection[cardIndex].count -= 1;
+    findMatchingSuite(handOne, generatedCard);
+    findMatchingSuite(handTwo, generatedCard);
+    // if (
+    //   handOne.length > 0 &&
+    //   handOne[length].suite == generatedCard.suite &&
+    //   handTwo[length].suite == generatedCard.suite
+    // ) {
+    //   generatedCard.count -= 1;
+    // }
+    if (turn == 1) {
+      handOne.push(generatedCard);
+    } else if (turn == 2) {
+      handTwo.push(generatedCard);
+    }
+    //cardCollection.filter((card) => card.count > 0);
   };
 
   const ifPlayerHits = (handOne: card[], handTwo: card[], turn: number) => {
     if (hit == 1) {
-      turn = 1
+      turn = 1;
       return addCardToHand(handOne, handTwo, turn);
-    } 
+    }
   };
 
   /*
@@ -101,11 +117,11 @@ export default function ManageCards({
    */
 
   //adds cards depending on player choice
-  console.log("Turn: " + turn + " Hit: " + hit)
-  console.log("Player hand: ")
-  addCardToHand(playerHand, dealerHand, 1)
-  console.log("Dealer hand: ")
-  addCardToHand(playerHand, dealerHand, 2)
+  console.log("Turn: " + turn + " Hit: " + hit);
+  console.log("Player hand: ");
+  addCardToHand(playerHand, dealerHand, 1);
+  console.log("Dealer hand: ");
+  addCardToHand(playerHand, dealerHand, 2);
   console.log(playerHand);
   console.log(dealerHand);
 
