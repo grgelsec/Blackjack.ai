@@ -53,46 +53,43 @@ export default function ManageCards({
     { rank: 11, count: 4, suite: "ace" },
   ];
 
-  const getCard = () => {
-    const cardIndex = getRandomInt(12);
-    let generatedCard = cardCollection[cardIndex];
-    while (generatedCard.count < 0) {
-      generatedCard = cardCollection[getRandomInt(12)];
-    }
-    return generatedCard;
-  };
-
   // const getCard = () => {
-  //   let generatedCard: card;
-  //   do {
-  //     const cardIndex = getRandomInt(cardCollection.length);
-  //     generatedCard = cardCollection[cardIndex];
-  //   } while (generatedCard.count <= 0);
+  //   const cardIndex = getRandomInt(12);
+  //   let generatedCard = cardCollection[cardIndex];
+  //   while (generatedCard.count < 0) {
+  //     generatedCard = cardCollection[getRandomInt(12)];
+  //   }
   //   return generatedCard;
   // };
 
+  const getCard = () => {
+    let generatedCard: card;
+    do {
+      const cardIndex = getRandomInt(cardCollection.length);
+      generatedCard = cardCollection[cardIndex];
+    } while (generatedCard.count <= 0);
+    return generatedCard;
+  };
+
   //search array to see if it contains a card with the same suite as the new card
-  const findMatchingSuite = (
-    handOne: card[],
-    handTwo: card[],
-    newCard: card
-  ) => {
+  const findMatchingSuite = (handOne: card[], newCard: card) => {
     for (let i = 0; i < handOne.length; i++) {
       if (handOne[i].suite == newCard.suite && handOne[i].count > 0) {
         newCard.count -= 1;
       }
     }
-    for (let i = 0; i < handTwo.length; i++) {
-      if (handTwo[i].suite == newCard.suite && handTwo[i].count > 0) {
-        newCard.count -= 1;
-      }
-    }
+    // for (let i = 0; i < handTwo.length; i++) {
+    //   if (handTwo[i].suite == newCard.suite && handTwo[i].count > 0) {
+    //     newCard.count -= 1;
+    //   }
+    // }
   };
 
   //adds card and adjusts the count accoding to exisitng cards in hand.
   const addCardToHand = (handOne: card[], handTwo: card[], turn: number) => {
     const cardOne = getCard();
-    findMatchingSuite(handOne, handTwo, cardOne);
+    findMatchingSuite(handOne, cardOne);
+    findMatchingSuite(handTwo, cardOne);
     if (turn === 1) {
       handOne.push(cardOne);
     } else if (turn === 2) {
@@ -107,17 +104,21 @@ export default function ManageCards({
     }
   };
 
+  //need a function that adds two cards to the start
   const startGame = () => {
     if (gameState == 1) {
       gameState = 0;
       addCardToHand(playerHand, dealerHand, 1);
+      addCardToHand(playerHand, dealerHand, 2);
       addCardToHand(playerHand, dealerHand, 1);
+      addCardToHand(playerHand, dealerHand, 2);
     }
   };
   startGame();
   ifPlayerHits(playerHand, dealerHand, 1);
   console.log(gameState);
   console.log(playerHand);
+  console.log(dealerHand);
   console.log(hit);
   console.log(turn);
   /*
