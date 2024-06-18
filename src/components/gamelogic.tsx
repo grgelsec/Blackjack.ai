@@ -46,7 +46,7 @@ export default function ManageCards({
     { rank: 10, count: 4, suite: "jack" },
     { rank: 10, count: 4, suite: "queen" },
     { rank: 10, count: 4, suite: "king" },
-    { rank: getRandomInt(11), count: 4, suite: "ace" },
+    { rank: 11, count: 4, suite: "ace" },
   ];
 
   // const removeEmptyCards = (cardCollection: card[]) => {
@@ -73,13 +73,14 @@ export default function ManageCards({
     // }
     // generatedCard.count -= 1;
     // maybe use .contains?
-    // findMatchingSuite(handTwo, generatedCard);
-    // findMatchingSuite(handOne, generatedCard);
     const card = getCard();
+    const cardTwo = getCard();
+    findMatchingSuite(handTwo, card);
+    findMatchingSuite(handOne, cardTwo);
     if (turn == 1) {
       handOne.push(card);
     } else if (turn == 2) {
-      handTwo.push(card);
+      handTwo.push(cardTwo);
     }
     //cardCollection.filter((card) => card.count > 0);
   };
