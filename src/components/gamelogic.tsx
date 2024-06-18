@@ -53,23 +53,23 @@ export default function ManageCards({
     { rank: 11, count: 4, suite: "ace" },
   ];
 
-  // const getCard = () => {
-  //   const cardIndex = getRandomInt(12);
-  //   let generatedCard = cardCollection[cardIndex];
-  //   while (generatedCard.count < 0) {
-  //     generatedCard = cardCollection[getRandomInt(12)];
-  //   }
-  //   return generatedCard;
-  // };
-
   const getCard = () => {
-    let generatedCard: card;
-    do {
-      const cardIndex = getRandomInt(cardCollection.length);
-      generatedCard = cardCollection[cardIndex];
-    } while (generatedCard.count <= 0);
+    const cardIndex = getRandomInt(12);
+    let generatedCard = cardCollection[cardIndex];
+    while (generatedCard.count < 0) {
+      generatedCard = cardCollection[getRandomInt(12)];
+    }
     return generatedCard;
   };
+
+  // const getCard = () => {
+  //   let generatedCard: card;
+  //   do {
+  //     const cardIndex = getRandomInt(cardCollection.length);
+  //     generatedCard = cardCollection[cardIndex];
+  //   } while (generatedCard.count <= 0);
+  //   return generatedCard;
+  // };
 
   //search array to see if it contains a card with the same suite as the new card
   const findMatchingSuite = (handOne: card[], newCard: card) => {
@@ -91,6 +91,7 @@ export default function ManageCards({
     findMatchingSuite(handOne, cardOne);
     findMatchingSuite(handTwo, cardOne);
     if (turn === 1) {
+      console.log(cardOne);
       handOne.push(cardOne);
     } else if (turn === 2) {
       handTwo.push(cardOne);
@@ -104,7 +105,7 @@ export default function ManageCards({
     }
   };
 
-  //need a function that adds two cards to the start
+  //TODO: need a function that adds two cards to the start
   const startGame = () => {
     if (gameState == 1) {
       gameState = 0;
@@ -116,11 +117,8 @@ export default function ManageCards({
   };
   startGame();
   ifPlayerHits(playerHand, dealerHand, 1);
-  console.log(gameState);
-  console.log(playerHand);
   console.log(dealerHand);
-  console.log(hit);
-  console.log(turn);
+  console.log(playerHand);
   /*
    game starts and the cards are dealt to the user and dealer(bot)
    turn is 1 (user)
