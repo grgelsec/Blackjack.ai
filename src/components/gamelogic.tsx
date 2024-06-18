@@ -65,22 +65,36 @@ export default function ManageCards({
   //adds card and adjusts the count accoding to exisitng cards in hand.
 
   const addCardToHand = (handOne: card[], handTwo: card[], turn: number) => {
-    let cardIndex = getRandomInt(12);
-    let generatedCard = cardCollection[cardIndex];
-    if (generatedCard.count == 0) {
-      cardIndex = getRandomInt(12);
-      generatedCard = cardCollection[cardIndex];
-    }
-    generatedCard.count -= 1;
+    // let cardIndex = getRandomInt(12);
+    // let generatedCard = cardCollection[cardIndex];
+    // if (generatedCard.count == 0) {
+    //   cardIndex = getRandomInt(12);
+    //   generatedCard = cardCollection[cardIndex];
+    // }
+    // generatedCard.count -= 1;
     // maybe use .contains?
-    findMatchingSuite(handTwo, generatedCard);
-    findMatchingSuite(handOne, generatedCard);
+    // findMatchingSuite(handTwo, generatedCard);
+    // findMatchingSuite(handOne, generatedCard);
+    const card = getCard();
     if (turn == 1) {
-      handOne.push(generatedCard);
+      handOne.push(card);
     } else if (turn == 2) {
-      handTwo.push(generatedCard);
+      handTwo.push(card);
     }
     //cardCollection.filter((card) => card.count > 0);
+  };
+
+  const getCard = () => {
+    const cardIndex = getRandomInt(12);
+    const generatedCard = cardCollection[cardIndex];
+    generatedCard.count = cardCollection[cardIndex].count - 1;
+    if (generatedCard.count == 0) {
+      const newCardIndex = getRandomInt(12);
+      const newCard = cardCollection[getRandomInt(12)];
+      newCard.count = cardCollection[newCardIndex].count - 1;
+      return newCard;
+    }
+    return generatedCard;
   };
 
   const ifPlayerHits = (handOne: card[], handTwo: card[], turn: number) => {
