@@ -15,7 +15,7 @@ interface ManageProps {
   setDealerHand: React.Dispatch<React.SetStateAction<card[]>>;
 }
 
-//TODO: New problem, cards with count == 0 are being added to the hands. And the duplicate of a card is subtracting lower than 0.
+//TODO: New problem, cards with count == 0 are being added to the hands and when the same card gets called at the same time, it subtracts more. maybe see if i can get rid of findmatchingsuite
 
 export default function ManageCards({
   hit,
@@ -67,21 +67,14 @@ export default function ManageCards({
   const addCardToHand = (handOne: card[], handTwo: card[], turn: number) => {
     let cardIndex = getRandomInt(12);
     let generatedCard = cardCollection[cardIndex];
-    if (generatedCard.count < 0) {
+    if (generatedCard.count == 0) {
       cardIndex = getRandomInt(12);
       generatedCard = cardCollection[cardIndex];
     }
     generatedCard.count -= 1;
-    //cardCollection[cardIndex].count -= 1;
-    findMatchingSuite(handOne, generatedCard);
+    // maybe use .contains?
     findMatchingSuite(handTwo, generatedCard);
-    // if (
-    //   handOne.length > 0 &&
-    //   handOne[length].suite == generatedCard.suite &&
-    //   handTwo[length].suite == generatedCard.suite
-    // ) {
-    //   generatedCard.count -= 1;
-    // }
+    findMatchingSuite(handOne, generatedCard);
     if (turn == 1) {
       handOne.push(generatedCard);
     } else if (turn == 2) {
