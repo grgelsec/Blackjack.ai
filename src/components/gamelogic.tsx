@@ -54,16 +54,10 @@ export default function ManageCards({
   // };
   //search array to see if it contains a card with the same suite as the new card
   const findMatchingSuite = (hand: card[], newCard: card) => {
-    //let duplicates = 0;
     for (let i = 0; i < hand.length; i++) {
       if (hand[i].suite == newCard.suite && hand[i].count > 0) {
-        //duplicates += 1;
-        //if (duplicates == 1) {
         //cardCollection[i].count = cardCollection[i].count - 1;
         newCard.count -= 1;
-        //} else if (duplicates == 2) {
-        //newCard.count -= 1;
-        //}
       }
     }
   };
@@ -73,7 +67,7 @@ export default function ManageCards({
   const addCardToHand = (handOne: card[], handTwo: card[], turn: number) => {
     let cardIndex = getRandomInt(12);
     let generatedCard = cardCollection[cardIndex];
-    if (generatedCard.count == 0) {
+    if (generatedCard.count < 0) {
       cardIndex = getRandomInt(12);
       generatedCard = cardCollection[cardIndex];
     }
