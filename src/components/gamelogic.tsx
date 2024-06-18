@@ -13,6 +13,8 @@ interface ManageProps {
   setPlayerHand: React.Dispatch<React.SetStateAction<card[]>>;
   dealerHand: card[];
   setDealerHand: React.Dispatch<React.SetStateAction<card[]>>;
+  gameState: number;
+  setGameState: React.Dispatch<React.SetStateAction<number>>;
 }
 
 //TODO: New problem, cards with count == 0 are being added to the hands and when the same card gets called at the same time, it subtracts more. maybe see if i can get rid of findmatchingsuite
@@ -25,6 +27,8 @@ export default function ManageCards({
   setPlayerHand,
   dealerHand,
   setDealerHand,
+  gameState,
+  setGameState,
 }: ManageProps) {
   //selects a random index in cardCollection
   const getRandomInt = (max: number) => {
@@ -49,62 +53,73 @@ export default function ManageCards({
     { rank: 11, count: 4, suite: "ace" },
   ];
 
-  // const removeEmptyCards = (cardCollection: card[]) => {
-  //   return cardCollection.filter((card) => card.count > 0);
+  const getCard = () => {
+    const cardIndex = getRandomInt(12);
+    let generatedCard = cardCollection[cardIndex];
+    while (generatedCard.count < 0) {
+      generatedCard = cardCollection[getRandomInt(12)];
+    }
+    return generatedCard;
+  };
+
+  // const getCard = () => {
+  //   let generatedCard: card;
+  //   do {
+  //     const cardIndex = getRandomInt(cardCollection.length);
+  //     generatedCard = cardCollection[cardIndex];
+  //   } while (generatedCard.count <= 0);
+  //   return generatedCard;
   // };
+
   //search array to see if it contains a card with the same suite as the new card
-  const findMatchingSuite = (hand: card[], newCard: card) => {
-    for (let i = 0; i < hand.length; i++) {
-      if (hand[i].suite == newCard.suite && hand[i].count > 0) {
-        //cardCollection[i].count = cardCollection[i].count - 1;
+  const findMatchingSuite = (
+    handOne: card[],
+    handTwo: card[],
+    newCard: card
+  ) => {
+    for (let i = 0; i < handOne.length; i++) {
+      if (handOne[i].suite == newCard.suite && handOne[i].count > 0) {
+        newCard.count -= 1;
+      }
+    }
+    for (let i = 0; i < handTwo.length; i++) {
+      if (handTwo[i].suite == newCard.suite && handTwo[i].count > 0) {
         newCard.count -= 1;
       }
     }
   };
 
   //adds card and adjusts the count accoding to exisitng cards in hand.
-
   const addCardToHand = (handOne: card[], handTwo: card[], turn: number) => {
-    // let cardIndex = getRandomInt(12);
-    // let generatedCard = cardCollection[cardIndex];
-    // if (generatedCard.count == 0) {
-    //   cardIndex = getRandomInt(12);
-    //   generatedCard = cardCollection[cardIndex];
-    // }
-    // generatedCard.count -= 1;
-    // maybe use .contains?
-    const card = getCard();
-    const cardTwo = getCard();
-    findMatchingSuite(handTwo, card);
-    findMatchingSuite(handOne, cardTwo);
-    if (turn == 1) {
-      handOne.push(card);
-    } else if (turn == 2) {
-      handTwo.push(cardTwo);
+    const cardOne = getCard();
+    findMatchingSuite(handOne, handTwo, cardOne);
+    if (turn === 1) {
+      handOne.push(cardOne);
+    } else if (turn === 2) {
+      handTwo.push(cardOne);
     }
-    //cardCollection.filter((card) => card.count > 0);
-  };
-
-  const getCard = () => {
-    const cardIndex = getRandomInt(12);
-    const generatedCard = cardCollection[cardIndex];
-    generatedCard.count = cardCollection[cardIndex].count - 1;
-    if (generatedCard.count == 0) {
-      const newCardIndex = getRandomInt(12);
-      const newCard = cardCollection[getRandomInt(12)];
-      newCard.count = cardCollection[newCardIndex].count - 1;
-      return newCard;
-    }
-    return generatedCard;
   };
 
   const ifPlayerHits = (handOne: card[], handTwo: card[], turn: number) => {
     if (hit == 1) {
-      turn = 1;
+      hit = 0;
       return addCardToHand(handOne, handTwo, turn);
     }
   };
 
+  const startGame = () => {
+    if (gameState == 1) {
+      gameState = 0;
+      addCardToHand(playerHand, dealerHand, 1);
+      addCardToHand(playerHand, dealerHand, 1);
+    }
+  };
+  startGame();
+  ifPlayerHits(playerHand, dealerHand, 1);
+  console.log(gameState);
+  console.log(playerHand);
+  console.log(hit);
+  console.log(turn);
   /*
    game starts and the cards are dealt to the user and dealer(bot)
    turn is 1 (user)
@@ -119,13 +134,6 @@ export default function ManageCards({
    */
 
   //adds cards depending on player choice
-  console.log("Turn: " + turn + " Hit: " + hit);
-  console.log("Player hand: ");
-  addCardToHand(playerHand, dealerHand, 1);
-  console.log("Dealer hand: ");
-  addCardToHand(playerHand, dealerHand, 2);
-  console.log(playerHand);
-  console.log(dealerHand);
 
   return (
     <>

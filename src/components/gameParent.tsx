@@ -2,6 +2,7 @@ import { useState } from "react";
 import HitOption from "./hit";
 import StayOption from "./stay";
 import ManageCards from "./gamelogic";
+import Start from "./startgame";
 
 //TODO: add a way for the value to go back to false after their turn
 
@@ -17,22 +18,22 @@ export default function GameControls() {
   const [playerHand, setPlayerHand] = useState<card[]>([]);
   const [dealerHand, setDealerHand] = useState<card[]>([]);
   const [turn, setTurn] = useState(0);
+  const [gameState, setGameState] = useState(0);
 
-  //  function setPlayerTurn() {
-  //   setHitChoice(1)    
-  //  }
+  function handleGameState() {
+    setGameState(1);
 
-  //  function setDealerTurn() {
-  //   setHitChoice(0)
-  //  }
+    setTimeout(() => {
+      setGameState(0);
+    }, 1);
+  }
 
   //indicates if player selects hit and resets
   function handleHit() {
     setHitChoice(Number(1));
-
     setTimeout(() => {
       setHitChoice(0);
-    }, 3);
+    }, 1);
   }
 
   //indicates if player selects stay and resets
@@ -48,6 +49,7 @@ export default function GameControls() {
     <>
       <HitOption hit={hit} handleHit={handleHit} />
       <StayOption stay={stay} handleStay={handleStay} />
+      <Start gameState={gameState} handleGameState={handleGameState} />
       <ManageCards
         hit={hit}
         playerHand={playerHand}
@@ -56,6 +58,8 @@ export default function GameControls() {
         setDealerHand={setDealerHand}
         turn={turn}
         setTurn={setTurn}
+        gameState={gameState}
+        setGameState={setGameState}
       />
     </>
   );
