@@ -18,35 +18,36 @@ export default function GameControls() {
   const [stay, setStayChoice] = useState(0);
   const [playerHand, setPlayerHand] = useState<card[]>([]);
   const [dealerHand, setDealerHand] = useState<card[]>([]);
-  const [turn, setTurn] = useState(1);
+  const [turn, setTurn] = useState(0);
   const [gameState, setGameState] = useState(0);
   const [playerCount, setPlayerCount] = useState(0);
   const [dealerCount, setDealerCount] = useState(0);
+  const [startGame, setStartGame] = useState(false);
 
   //indicates if the game is going or not.
   function handleGameState() {
     setGameState(1);
 
-    setTimeout(() => {
-      setGameState(0);
-    }, 1);
+    // setTimeout(() => {
+    //   setGameState(0);
+    // }, 1);
   }
 
   //indicates if player selects hit and resets
   function handleHit() {
-    setHitChoice(Number(1));
-    setTimeout(() => {
-      setHitChoice(0);
-    }, 1);
+    setTurn(1);
+    // setTimeout(() => {
+    //   setTurn(2);
+    // }, 2);
   }
 
   //indicates if player selects stay and resets
   function handleStay() {
-    setStayChoice(1);
+    setTurn(2);
 
-    setTimeout(() => {
-      setStayChoice(0);
-    }, 1);
+    // setTimeout(() => {
+    //   setTurn(2);
+    // }, 2);
   }
 
   return (

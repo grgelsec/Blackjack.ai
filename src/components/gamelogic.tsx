@@ -53,24 +53,15 @@ export default function ManageCards({
 
   //generates a random card.
   const getCard = () => {
-    const cardIndex = getRandomInt(getRandomInt(12));
+    let cardIndex = getRandomInt(cardCollection.length);
     let generatedCard = cardCollection[cardIndex];
-    while (generatedCard.count < 0) {
-      generatedCard = cardCollection[getRandomInt(12)];
-    }
-    return generatedCard;
-  };
-
-  /*
-  const getCard = () => {
-    let generatedCard: card;
-    do {
-      const cardIndex = getRandomInt(cardCollection.length);
+    while (generatedCard.count <= 0) {
+      cardIndex = getRandomInt(cardCollection.length);
       generatedCard = cardCollection[cardIndex];
-    } while (generatedCard.count <= 0);
+    }
+    cardCollection[cardIndex].count -= 1;
     return generatedCard;
   };
-  */
 
   //search array to see if it contains a card with the same suite as the new card
   const findMatchingSuite = (handOne: card[], newCard: card) => {
@@ -79,72 +70,48 @@ export default function ManageCards({
         newCard.count -= 1;
       }
     }
-    // for (let i = 0; i < handTwo.length; i++) {
-    //   if (handTwo[i].suite == newCard.suite && handTwo[i].count > 0) {
-    //     newCard.count -= 1;
-    //   }
-    // }
   };
 
   //adds card and adjusts the count accoding to exisitng cards in hand.
-  const addCardToHand = (handOne: card[], handTwo: card[], turn: number) => {
-    const cardOne = getCard();
-    findMatchingSuite(handOne, cardOne);
-    findMatchingSuite(handTwo, cardOne);
+  const addCardToHand = (hand: card[], turn: number) => {
+    const newCard = getCard();
     if (turn === 1) {
-      console.log(cardOne);
-      handOne.push(cardOne);
-    } else if (turn === 2) {
-      handTwo.push(cardOne);
+      hand.push(newCard);
+    } else if (turn === 0) {
+      hand.push(newCard);
     }
   };
 
-  const ifPlayerHits = (handOne: card[], handTwo: card[], turn: number) => {
-    if (hit == 1) {
-      hit = 0;
-      return addCardToHand(handOne, handTwo, turn);
+  const calculateHandValue = (hand: card[]) => {
+    let total = 0;
+    hand.forEach((card) => {
+      total += card.rank;
+    });
+    return total;
+  };
+
+  const ifPlayerHits = (hand: card[], turn: number) => {
+    if (turn === 1) {
+      return addCardToHand(hand, turn);
     }
   };
 
-  // const findPlayerTotal = (hand: card[], count: number) => {
-  //   for (let i = 0; i <= hand.length; i++) {
-  //     count += hand[i].count;
-  //   }
-  //   return count;
-  // };
+  const ifPlayerStays = (turn: number) => {
+    if (turn === 0) {
+      return;
+    }
+  };
+
+  const dealerTurn = () => {
+    while (calculateHandValue(dealerHand) < 17) addCardToHand(dealerHand, 0);
+  };
 
   //GAME LOGIC
-  const startGame = () => {
-    if (gameState == 1) {
-      gameState = 0;
-      addCardToHand(playerHand, dealerHand, 1);
-      addCardToHand(playerHand, dealerHand, 2);
-      addCardToHand(playerHand, dealerHand, 1);
-    }
-  };
-  const runningGame = () => {
-    while (gameState == 1) {
-      if (hit == 1) {
-        hit = 0;
-        addCardToHand(playerHand, dealerHand, turn);
-        turn = 0;
-      } else if (stay == 1) {
-        stay = 0;
-      } else if (hit == 0) {
-        hit = 1;
-        addCardToHand(playerHand, dealerHand, turn);
-        turn = 1;
-      }
-    }
-  };
-  startGame();
-  runningGame();
-  // } else if (turn == 0) {
 
-  // }
-  console.log(hit);
-  console.log(dealerHand);
   console.log(playerHand);
+  console.log(dealerHand);
+  console.log("Game State: " + gameState);
+  console.log("Game Turn: " + turn);
 
   /*
    game starts and the cards are dealt to the user and dealer(bot)
