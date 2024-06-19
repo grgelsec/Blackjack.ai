@@ -1,33 +1,14 @@
+import { useState } from "react";
+
 type card = {
   count: number;
   rank: number;
-  suite: string;
+  suit: string;
 };
 
-//indicates types from parnet component gameParent.tsx
-interface ManageProps {
-  hit: number;
-  stay: number;
-  turn: number;
-  playerHand: card[];
-  dealerHand: card[];
-  gameState: number;
-  playerCount: number;
-  dealerCount: number;
-}
-
-//TODO: New problem, cards with count == 0 are being added to the hands and when the same card gets called at the same time, it subtracts more. maybe see if i can get rid of findmatchingsuite
-
-export default function ManageCards({
-  hit,
-  stay,
-  turn,
-  playerHand,
-  dealerHand,
-  gameState,
-  playerCount,
-  dealerCount,
-}: ManageProps) {
+export default function ManageCards() {
+  const [playerHand, setPlayerHand] = useState<card[]>([]);
+  const [dealerHand, setDealerHand] = useState<card[]>([]);
   //selects a random index in cardCollection
   const getRandomInt = (max: number) => {
     return Math.floor(Math.random() * max + 1);
@@ -35,50 +16,42 @@ export default function ManageCards({
 
   //db of cards available to the user
   const cardCollection: card[] = [
-    { rank: 1, count: 4, suite: "one" },
-    { rank: 2, count: 4, suite: "two" },
-    { rank: 3, count: 4, suite: "three" },
-    { rank: 4, count: 4, suite: "four" },
-    { rank: 5, count: 4, suite: "five" },
-    { rank: 6, count: 4, suite: "six" },
-    { rank: 7, count: 4, suite: "seven" },
-    { rank: 8, count: 4, suite: "eight" },
-    { rank: 9, count: 4, suite: "nine" },
-    { rank: 10, count: 4, suite: "ten" },
-    { rank: 10, count: 4, suite: "jack" },
-    { rank: 10, count: 4, suite: "queen" },
-    { rank: 10, count: 4, suite: "king" },
-    { rank: getRandomInt(12), count: 4, suite: "ace" },
+    { rank: 1, count: 4, suit: "one" },
+    { rank: 2, count: 4, suit: "two" },
+    { rank: 3, count: 4, suit: "three" },
+    { rank: 4, count: 4, suit: "four" },
+    { rank: 5, count: 4, suit: "five" },
+    { rank: 6, count: 4, suit: "six" },
+    { rank: 7, count: 4, suit: "seven" },
+    { rank: 8, count: 4, suit: "eight" },
+    { rank: 9, count: 4, suit: "nine" },
+    { rank: 10, count: 4, suit: "ten" },
+    { rank: 10, count: 4, suit: "jack" },
+    { rank: 10, count: 4, suit: "queen" },
+    { rank: 10, count: 4, suit: "king" },
+    { rank: getRandomInt(12), count: 4, suit: "ace" },
   ];
 
   //generates a random card.
   const getCard = () => {
-    let cardIndex = getRandomInt(cardCollection.length);
-    let generatedCard = cardCollection[cardIndex];
-    while (generatedCard.count <= 0) {
-      cardIndex = getRandomInt(cardCollection.length);
-      generatedCard = cardCollection[cardIndex];
-    }
-    cardCollection[cardIndex].count -= 1;
+    const generatedCard = cardCollection[getRandomInt(13)];
+    // while (generatedCard.count < 0) {
+    //   cardIndex = getRandomInt(cardCollection.length);
+    //   generatedCard = cardCollection[cardIndex];
+    // }
+    generatedCard.count -= 1;
     return generatedCard;
   };
 
   //search array to see if it contains a card with the same suite as the new card
-  const findMatchingSuite = (handOne: card[], newCard: card) => {
-    for (let i = 0; i < handOne.length; i++) {
-      if (handOne[i].suite == newCard.suite && handOne[i].count > 0) {
-        newCard.count -= 1;
-      }
-    }
-  };
 
   //adds card and adjusts the count accoding to exisitng cards in hand.
-  const addCardToHand = (hand: card[], turn: number) => {
+  const addCardToHand = (turn: number) => {
     const newCard = getCard();
     if (turn === 1) {
-      hand.push(newCard);
+      setPlayerHand([...playerHand, newCard]);
     } else if (turn === 0) {
-      hand.push(newCard);
+      setDealerHand([...dealerHand, newCard]);
     }
   };
 
@@ -90,53 +63,86 @@ export default function ManageCards({
     return total;
   };
 
-  const ifPlayerHits = (hand: card[], turn: number) => {
-    if (turn === 1) {
-      return addCardToHand(hand, turn);
-    }
+  const ifPlayerHits = (turn: number) => {
+    return addCardToHand(turn);
   };
 
-  const ifPlayerStays = (turn: number) => {
-    if (turn === 0) {
-      return;
-    }
+  const ifPlayerStays = () => {
+    dealerTurn();
   };
 
   const dealerTurn = () => {
-    while (calculateHandValue(dealerHand) < 17) addCardToHand(dealerHand, 0);
+    checkForWinner();
   };
 
   //GAME LOGIC
-
   console.log(playerHand);
   console.log(dealerHand);
-  console.log("Game State: " + gameState);
-  console.log("Game Turn: " + turn);
 
-  /*
-   game starts and the cards are dealt to the user and dealer(bot)
-   turn is 1 (user)
-   if player selects hit or stay, set hit to 1 or stay to 1
-   set turn to 0
-   delay for a second or two
-   need to calculate the sum of the player deck
-   display dealers second card
-   if dealer sum is 16 or less, they hit, if sum is > 21, they bust
-   if dealter sum is 17 or more, the stay. if user or dealer is closer to 21 then they win
-   when turn is 0, then the robot does its thing
-   */
+  const checkForWinner = () => {
+    const playerTotal = calculateHandValue(playerHand);
+    const dealerTotal = calculateHandValue(dealerHand);
 
-  //adds cards depending on player choice
+    if (playerTotal > 21) {
+      console.log("Player Busts! Dealer Wins!");
+    } else if (dealerTotal > 21) {
+      console.log("Dealer Busts! Player Wins!");
+    } else if (playerTotal > dealerTotal) {
+      console.log("Player Wins!");
+    } else if (dealerTotal > playerTotal) {
+      console.log("Dealer Wins!");
+    } else {
+      console.log("It's a tie!");
+    }
+  };
 
   return (
     <>
-      <div>
-        {/* {playerHand.map((card) => (
-          <div className="p-4 bg-white text-red-500 font-mono text-md">
-            {card.rank}
+      <body className="flex col flex-wrap justify-center">
+        <div className="flex col flex-wrap gap-3 w-3/12">
+          <div className="flex row space-x-3">
+            {dealerHand.map((card) => (
+              <div className="py-8 px-6 bg-white text-xl text-red-500 font-mono rounded-xl text-md">
+                {card.rank}
+              </div>
+            ))}
           </div>
-        ))} */}
-      </div>
+          <div className="flex row space-x-3">
+            {playerHand.map((card) => (
+              <div className="py-8 px-6 bg-white text-xl text-red-500 font-mono rounded-xl text-md">
+                {card.rank}
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="flex justify-center items-center gap-3">
+          <button
+            className="px-4 py-4 bg-white rounded-xl font-mono"
+            onClick={() => ifPlayerHits(1)}
+          >
+            Hit
+          </button>
+          <button
+            className="px-4 py-4 bg-white rounded-xl font-mono"
+            onClick={() => ifPlayerStays()}
+          >
+            Stay
+          </button>
+          <button
+            className="px-4 py-4 bg-white rounded-xl font-mono"
+            onClick={() => ifPlayerHits(1)}
+          >
+            Deal Player
+          </button>
+          <button
+            className="px-4 py-4 bg-white rounded-xl font-mono"
+            onClick={() => ifPlayerHits(0)}
+          >
+            Deal Dealer
+          </button>
+        </div>
+        <h1 className="text-white text-3xl font-mono">{}</h1>
+      </body>
     </>
   );
 }

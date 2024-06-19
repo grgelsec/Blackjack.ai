@@ -1,11 +1,10 @@
-//import MoneyRecord from "./components/betstotalParent"
-import GameControls from "./components/gameParent";
+import ManageCards from "./components/gamelogic";
 
 function App() {
   return (
     <>
       <div className="flex justify-center">
-        <GameControls />
+        <ManageCards />
       </div>
     </>
   );
