@@ -9,12 +9,11 @@ type card = {
 export default function ManageCards() {
   const [playerHand, setPlayerHand] = useState<card[]>([]);
   const [dealerHand, setDealerHand] = useState<card[]>([]);
-  //selects a random index in cardCollection
+
   const getRandomInt = (max: number) => {
     return Math.floor(Math.random() * max + 1);
   };
 
-  //db of cards available to the user
   const cardCollection: card[] = [
     { rank: 1, count: 4, suit: "one" },
     { rank: 2, count: 4, suit: "two" },
@@ -32,20 +31,12 @@ export default function ManageCards() {
     { rank: getRandomInt(12), count: 4, suit: "ace" },
   ];
 
-  //generates a random card.
   const getCard = () => {
-    const generatedCard = cardCollection[getRandomInt(13)];
-    // while (generatedCard.count < 0) {
-    //   cardIndex = getRandomInt(cardCollection.length);
-    //   generatedCard = cardCollection[cardIndex];
-    // }
+    const generatedCard = cardCollection[getRandomInt(12)];
     generatedCard.count -= 1;
     return generatedCard;
   };
 
-  //search array to see if it contains a card with the same suite as the new card
-
-  //adds card and adjusts the count accoding to exisitng cards in hand.
   const addCardToHand = (turn: number) => {
     const newCard = getCard();
     if (turn === 1) {
@@ -72,12 +63,9 @@ export default function ManageCards() {
   };
 
   const dealerTurn = () => {
+    addCardToHand(0);
     checkForWinner();
   };
-
-  //GAME LOGIC
-  console.log(playerHand);
-  console.log(dealerHand);
 
   const checkForWinner = () => {
     const playerTotal = calculateHandValue(playerHand);
@@ -97,52 +85,64 @@ export default function ManageCards() {
   };
 
   return (
-    <>
-      <body className="flex col flex-wrap justify-center">
-        <div className="flex col flex-wrap gap-3 w-3/12">
-          <div className="flex row space-x-3">
-            {dealerHand.map((card) => (
-              <div className="py-8 px-6 bg-white text-xl text-red-500 font-mono rounded-xl text-md">
-                {card.rank}
-              </div>
-            ))}
-          </div>
-          <div className="flex row space-x-3">
-            {playerHand.map((card) => (
-              <div className="py-8 px-6 bg-white text-xl text-red-500 font-mono rounded-xl text-md">
+    <div className="flex flex-col items-center justify-center text-white mt-60">
+      <h1 className="text-4xl font-mono mb-6">Blackjack</h1>
+      <div className="flex space-x-10 mb-6">
+        <div className="flex flex-col items-center gap-3">
+          <h2 className="text-2xl mb-2">Dealer's Hand</h2>
+          <div className="flex gap-3 ring-2 ring-red-500 p-4 rounded-lg">
+            {dealerHand.map((card, index) => (
+              <div
+                key={index}
+                className="py-2 px-4 bg-white text-xl text-red-500 font-mono rounded-xl"
+              >
                 {card.rank}
               </div>
             ))}
           </div>
         </div>
-        <div className="flex justify-center items-center gap-3">
-          <button
-            className="px-4 py-4 bg-white rounded-xl font-mono"
-            onClick={() => ifPlayerHits(1)}
-          >
-            Hit
-          </button>
-          <button
-            className="px-4 py-4 bg-white rounded-xl font-mono"
-            onClick={() => ifPlayerStays()}
-          >
-            Stay
-          </button>
-          <button
-            className="px-4 py-4 bg-white rounded-xl font-mono"
-            onClick={() => ifPlayerHits(1)}
-          >
-            Deal Player
-          </button>
-          <button
-            className="px-4 py-4 bg-white rounded-xl font-mono"
-            onClick={() => ifPlayerHits(0)}
-          >
-            Deal Dealer
-          </button>
+        <div className="flex flex-col items-center gap-3">
+          <h2 className="text-2xl mb-2">Player's Hand</h2>
+          <div className="flex gap-3 ring-2 ring-blue-500 p-4 rounded-lg">
+            {playerHand.map((card, index) => (
+              <div
+                key={index}
+                className="py-2 px-4 bg-white text-xl text-blue-500 font-mono rounded-xl"
+              >
+                {card.rank}
+              </div>
+            ))}
+          </div>
         </div>
-        <h1 className="text-white text-3xl font-mono">{}</h1>
-      </body>
-    </>
+      </div>
+      <div className="flex gap-6 mb-6">
+        <button
+          className="px-6 py-3 bg-green-500 rounded-xl font-mono text-lg"
+          onClick={() => ifPlayerHits(1)}
+        >
+          Hit
+        </button>
+        <button
+          className="px-6 py-3 bg-yellow-500 rounded-xl font-mono text-lg"
+          onClick={ifPlayerStays}
+        >
+          Stay
+        </button>
+      </div>
+      <div className="flex gap-6">
+        <button
+          className="px-6 py-3 bg-purple-500 rounded-xl font-mono text-lg"
+          onClick={() => ifPlayerHits(1)}
+        >
+          Deal Player
+        </button>
+        <button
+          className="px-6 py-3 bg-red-500 rounded-xl font-mono text-lg"
+          onClick={() => ifPlayerHits(0)}
+        >
+          Deal Dealer
+        </button>
+      </div>
+    </div>
   );
 }
