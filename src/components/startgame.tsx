@@ -9,7 +9,7 @@ export default function Start({ gameState, handleGameState }: startProps) {
       <button
         value={gameState}
         onClick={handleGameState}
-        className="p-4 bg-white rounded-xl font-mono"
+        className="px-4 py-4 bg-white rounded-xl font-mono"
       >
         Start Game
       </button>

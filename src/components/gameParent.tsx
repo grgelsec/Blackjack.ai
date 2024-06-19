@@ -3,6 +3,7 @@ import HitOption from "./hit";
 import StayOption from "./stay";
 import ManageCards from "./gamelogic";
 import Start from "./startgame";
+import CardLayout from "./cards";
 
 //TODO: add a way for the value to go back to false after their turn
 
@@ -17,9 +18,12 @@ export default function GameControls() {
   const [stay, setStayChoice] = useState(0);
   const [playerHand, setPlayerHand] = useState<card[]>([]);
   const [dealerHand, setDealerHand] = useState<card[]>([]);
-  const [turn, setTurn] = useState(0);
+  const [turn, setTurn] = useState(1);
   const [gameState, setGameState] = useState(0);
+  const [playerCount, setPlayerCount] = useState(0);
+  const [dealerCount, setDealerCount] = useState(0);
 
+  //indicates if the game is going or not.
   function handleGameState() {
     setGameState(1);
 
@@ -47,19 +51,31 @@ export default function GameControls() {
 
   return (
     <>
-      <HitOption hit={hit} handleHit={handleHit} />
-      <StayOption stay={stay} handleStay={handleStay} />
-      <Start gameState={gameState} handleGameState={handleGameState} />
+      <body className="">
+        <h1 className="text-3xl font-mono font-bold text-green-500 ring-2">
+          Blackjack
+        </h1>
+        <div className="">
+          <CardLayout playerHand={playerHand} dealerHand={dealerHand} />
+        </div>
+        <div className="">
+          <div>
+            <HitOption hit={hit} handleHit={handleHit} />
+            <StayOption stay={stay} handleStay={handleStay} />
+            <Start gameState={gameState} handleGameState={handleGameState} />
+          </div>
+        </div>
+      </body>
+
       <ManageCards
         hit={hit}
+        stay={stay}
         playerHand={playerHand}
-        setPlayerHand={setPlayerHand}
+        playerCount={playerCount}
+        dealerCount={dealerCount}
         dealerHand={dealerHand}
-        setDealerHand={setDealerHand}
         turn={turn}
-        setTurn={setTurn}
         gameState={gameState}
-        setGameState={setGameState}
       />
     </>
   );

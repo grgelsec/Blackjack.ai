@@ -11,7 +11,7 @@ export default function StayOption({ stay, handleStay }: StayProps) {
       <button
         value={stay}
         onClick={handleStay}
-        className="p-4 bg-white rounded-xl font-mono"
+        className="px-4 py-4 bg-white rounded-xl font-mono"
       >
         Stay
       </button>

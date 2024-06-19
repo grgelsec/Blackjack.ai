@@ -11,7 +11,7 @@ export default function HitOption({ hit, handleHit }: HitProps) {
       <button
         value={hit}
         onClick={handleHit}
-        className="p-4 bg-white rounded-xl font-mono"
+        className="px-4 py-4 bg-white rounded-xl font-mono"
       >
         Hit
       </button>

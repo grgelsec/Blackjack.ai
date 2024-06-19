@@ -7,28 +7,26 @@ type card = {
 //indicates types from parnet component gameParent.tsx
 interface ManageProps {
   hit: number;
+  stay: number;
   turn: number;
-  setTurn: React.Dispatch<React.SetStateAction<number>>;
   playerHand: card[];
-  setPlayerHand: React.Dispatch<React.SetStateAction<card[]>>;
   dealerHand: card[];
-  setDealerHand: React.Dispatch<React.SetStateAction<card[]>>;
   gameState: number;
-  setGameState: React.Dispatch<React.SetStateAction<number>>;
+  playerCount: number;
+  dealerCount: number;
 }
 
 //TODO: New problem, cards with count == 0 are being added to the hands and when the same card gets called at the same time, it subtracts more. maybe see if i can get rid of findmatchingsuite
 
 export default function ManageCards({
   hit,
+  stay,
   turn,
-  setTurn,
   playerHand,
-  setPlayerHand,
   dealerHand,
-  setDealerHand,
   gameState,
-  setGameState,
+  playerCount,
+  dealerCount,
 }: ManageProps) {
   //selects a random index in cardCollection
   const getRandomInt = (max: number) => {
@@ -50,11 +48,12 @@ export default function ManageCards({
     { rank: 10, count: 4, suite: "jack" },
     { rank: 10, count: 4, suite: "queen" },
     { rank: 10, count: 4, suite: "king" },
-    { rank: 11, count: 4, suite: "ace" },
+    { rank: getRandomInt(12), count: 4, suite: "ace" },
   ];
 
+  //generates a random card.
   const getCard = () => {
-    const cardIndex = getRandomInt(12);
+    const cardIndex = getRandomInt(getRandomInt(12));
     let generatedCard = cardCollection[cardIndex];
     while (generatedCard.count < 0) {
       generatedCard = cardCollection[getRandomInt(12)];
@@ -62,14 +61,16 @@ export default function ManageCards({
     return generatedCard;
   };
 
-  // const getCard = () => {
-  //   let generatedCard: card;
-  //   do {
-  //     const cardIndex = getRandomInt(cardCollection.length);
-  //     generatedCard = cardCollection[cardIndex];
-  //   } while (generatedCard.count <= 0);
-  //   return generatedCard;
-  // };
+  /*
+  const getCard = () => {
+    let generatedCard: card;
+    do {
+      const cardIndex = getRandomInt(cardCollection.length);
+      generatedCard = cardCollection[cardIndex];
+    } while (generatedCard.count <= 0);
+    return generatedCard;
+  };
+  */
 
   //search array to see if it contains a card with the same suite as the new card
   const findMatchingSuite = (handOne: card[], newCard: card) => {
@@ -105,20 +106,46 @@ export default function ManageCards({
     }
   };
 
-  //TODO: need a function that adds two cards to the start
+  // const findPlayerTotal = (hand: card[], count: number) => {
+  //   for (let i = 0; i <= hand.length; i++) {
+  //     count += hand[i].count;
+  //   }
+  //   return count;
+  // };
+
+  //GAME LOGIC
   const startGame = () => {
     if (gameState == 1) {
       gameState = 0;
       addCardToHand(playerHand, dealerHand, 1);
       addCardToHand(playerHand, dealerHand, 2);
       addCardToHand(playerHand, dealerHand, 1);
-      addCardToHand(playerHand, dealerHand, 2);
+    }
+  };
+  const runningGame = () => {
+    while (gameState == 1) {
+      if (hit == 1) {
+        hit = 0;
+        addCardToHand(playerHand, dealerHand, turn);
+        turn = 0;
+      } else if (stay == 1) {
+        stay = 0;
+      } else if (hit == 0) {
+        hit = 1;
+        addCardToHand(playerHand, dealerHand, turn);
+        turn = 1;
+      }
     }
   };
   startGame();
-  ifPlayerHits(playerHand, dealerHand, 1);
+  runningGame();
+  // } else if (turn == 0) {
+
+  // }
+  console.log(hit);
   console.log(dealerHand);
   console.log(playerHand);
+
   /*
    game starts and the cards are dealt to the user and dealer(bot)
    turn is 1 (user)
