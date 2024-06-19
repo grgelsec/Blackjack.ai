@@ -5,7 +5,7 @@ import ManageCards from "./gamelogic";
 import Start from "./startgame";
 import CardLayout from "./cards";
 
-//TODO: add a way for the value to go back to false after their turn
+//TODO: Need the start game to ignite the game state
 
 type card = {
   count: number;
