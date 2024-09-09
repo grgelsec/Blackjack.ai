@@ -1,147 +1,287 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { ArrowRight, Square } from "lucide-react";
 
-type card = {
-  count: number;
-  rank: number;
+type PlayingCard = {
+  rank: string;
   suit: string;
+  value: number;
 };
 
-export default function ManageCards() {
-  const [playerHand, setPlayerHand] = useState<card[]>([]);
-  const [dealerHand, setDealerHand] = useState<card[]>([]);
+export default function BlackjackGame() {
+  const [deck, setDeck] = useState<PlayingCard[]>([]);
+  const [playerHand, setPlayerHand] = useState<PlayingCard[]>([]);
+  const [dealerHand, setDealerHand] = useState<PlayingCard[]>([]);
+  const [gameState, setGameState] = useState<
+    "initial" | "playerTurn" | "dealerTurn" | "gameOver"
+  >("initial");
+  const [gameResult, setGameResult] = useState<string>("");
+  const [playerScore, setPlayerScore] = useState<number>(0);
+  const [dealerScore, setDealerScore] = useState<number>(0);
 
-  const getRandomInt = (max: number) => {
-    return Math.floor(Math.random() * max + 1);
+  useEffect(() => {
+    initializeDeck();
+  });
+
+  const initializeDeck = () => {
+    const suits = ["♠", "♥", "♦", "♣"];
+    const ranks = [
+      "A",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "J",
+      "Q",
+      "K",
+    ];
+    const newDeck: PlayingCard[] = [];
+
+    for (const suit of suits) {
+      for (const rank of ranks) {
+        newDeck.push({
+          rank,
+          suit,
+          value: getValue(rank),
+        });
+      }
+    }
+
+    setDeck(shuffleDeck(newDeck));
   };
 
-  const cardCollection: card[] = [
-    { rank: 1, count: 4, suit: "one" },
-    { rank: 2, count: 4, suit: "two" },
-    { rank: 3, count: 4, suit: "three" },
-    { rank: 4, count: 4, suit: "four" },
-    { rank: 5, count: 4, suit: "five" },
-    { rank: 6, count: 4, suit: "six" },
-    { rank: 7, count: 4, suit: "seven" },
-    { rank: 8, count: 4, suit: "eight" },
-    { rank: 9, count: 4, suit: "nine" },
-    { rank: 10, count: 4, suit: "ten" },
-    { rank: 10, count: 4, suit: "jack" },
-    { rank: 10, count: 4, suit: "queen" },
-    { rank: 10, count: 4, suit: "king" },
-    { rank: getRandomInt(12), count: 4, suit: "ace" },
-  ];
-
-  const getCard = () => {
-    const generatedCard = cardCollection[getRandomInt(12)];
-    generatedCard.count -= 1;
-    return generatedCard;
+  const shuffleDeck = (deck: PlayingCard[]) => {
+    return [...deck].sort(() => Math.random() - 0.5);
   };
 
-  const addCardToHand = (turn: number) => {
-    const newCard = getCard();
-    if (turn === 1) {
-      setPlayerHand([...playerHand, newCard]);
-    } else if (turn === 0) {
-      setDealerHand([...dealerHand, newCard]);
+  const getValue = (rank: string): number => {
+    if (rank === "A") return 11;
+    if (["K", "Q", "J"].includes(rank)) return 10;
+    return parseInt(rank);
+  };
+
+  const drawCard = (
+    currentDeck: PlayingCard[]
+  ): [PlayingCard, PlayingCard[]] => {
+    const updatedDeck = [...currentDeck];
+    const drawnCard = updatedDeck.pop()!;
+    return [drawnCard, updatedDeck];
+  };
+
+  const initialDeal = () => {
+    let newDeck = shuffleDeck([...deck]);
+    const newPlayerHand: PlayingCard[] = [];
+    const newDealerHand: PlayingCard[] = [];
+
+    // Deal two cards each to player and dealer
+    for (let i = 0; i < 2; i++) {
+      const [playerCard, updatedDeck1] = drawCard(newDeck);
+      newPlayerHand.push(playerCard);
+      newDeck = updatedDeck1;
+
+      const [dealerCard, updatedDeck2] = drawCard(newDeck);
+      newDealerHand.push(dealerCard);
+      newDeck = updatedDeck2;
+    }
+
+    setDeck(newDeck);
+    setPlayerHand(newPlayerHand);
+    setDealerHand(newDealerHand);
+    setGameState("playerTurn");
+    setGameResult("");
+
+    const playerValue = calculateHandValue(newPlayerHand);
+    setPlayerScore(playerValue);
+    setDealerScore(calculateHandValue([newDealerHand[0]]));
+
+    if (playerValue === 21) {
+      endGame("Blackjack! Player Wins!");
     }
   };
 
-  const calculateHandValue = (hand: card[]) => {
+  const calculateHandValue = (hand: PlayingCard[]) => {
     let total = 0;
+    let aces = 0;
     hand.forEach((card) => {
-      total += card.rank;
+      if (card.rank === "A") aces += 1;
+      total += card.value;
     });
+    while (total > 21 && aces > 0) {
+      total -= 10;
+      aces -= 1;
+    }
     return total;
   };
 
-  const ifPlayerHits = (turn: number) => {
-    return addCardToHand(turn);
-  };
-
-  const ifPlayerStays = () => {
-    dealerTurn();
-  };
-
-  const dealerTurn = () => {
-    addCardToHand(0);
-    checkForWinner();
-  };
-
-  const checkForWinner = () => {
-    const playerTotal = calculateHandValue(playerHand);
-    const dealerTotal = calculateHandValue(dealerHand);
-
-    if (playerTotal > 21) {
-      console.log("Player Busts! Dealer Wins!");
-    } else if (dealerTotal > 21) {
-      console.log("Dealer Busts! Player Wins!");
-    } else if (playerTotal > dealerTotal) {
-      console.log("Player Wins!");
-    } else if (dealerTotal > playerTotal) {
-      console.log("Dealer Wins!");
-    } else {
-      console.log("It's a tie!");
+  const ifPlayerHits = () => {
+    if (gameState === "playerTurn") {
+      const [newCard, updatedDeck] = drawCard(deck);
+      const newHand = [...playerHand, newCard];
+      setPlayerHand(newHand);
+      setDeck(updatedDeck);
+      const handValue = calculateHandValue(newHand);
+      setPlayerScore(handValue);
+      if (handValue === 21) {
+        endGame("Player hits 21! Player Wins!");
+      } else if (handValue > 21) {
+        endGame("Player Busts! Dealer Wins!");
+      }
     }
   };
 
+  const ifPlayerStays = () => {
+    if (gameState === "playerTurn") {
+      dealerTurn();
+    }
+  };
+
+  const dealerTurn = () => {
+    setGameState("dealerTurn");
+    const currentDealerHand = [...dealerHand];
+    let currentDeck = [...deck];
+
+    // First, reveal the dealer's hidden card
+    setDealerScore(calculateHandValue(currentDealerHand));
+
+    let dealerValue = calculateHandValue(currentDealerHand);
+
+    // Dealer draws additional cards only if their hand value is less than 17
+    while (dealerValue < 17) {
+      const [newCard, updatedDeck] = drawCard(currentDeck);
+      currentDealerHand.push(newCard);
+      currentDeck = updatedDeck;
+      dealerValue = calculateHandValue(currentDealerHand);
+    }
+
+    setDealerHand(currentDealerHand);
+    setDeck(currentDeck);
+    setDealerScore(dealerValue);
+    checkForWinner(currentDealerHand);
+  };
+
+  const checkForWinner = (finalDealerHand: PlayingCard[]) => {
+    const playerTotal = calculateHandValue(playerHand);
+    const dealerTotal = calculateHandValue(finalDealerHand);
+
+    if (dealerTotal > 21) {
+      endGame("Dealer Busts! Player Wins!");
+    } else if (playerTotal > dealerTotal) {
+      endGame("Player Wins!");
+    } else if (dealerTotal > playerTotal) {
+      endGame("Dealer Wins!");
+    } else {
+      endGame("It's a tie!");
+    }
+  };
+
+  const endGame = (result: string) => {
+    setGameState("gameOver");
+    setGameResult(result);
+  };
+
+  const renderCard = (card: PlayingCard, hidden: boolean = false) => (
+    <div
+      className={`w-16 h-24 rounded-lg flex items-center justify-center ${
+        hidden ? "bg-blue-500" : "bg-white"
+      } shadow-md`}
+    >
+      {hidden ? (
+        <div className="w-full h-full flex items-center justify-center">
+          <Square className="text-white" size={32} />
+        </div>
+      ) : (
+        <div
+          className={`text-2xl font-bold ${
+            ["♥", "♦"].includes(card.suit) ? "text-red-500" : "text-black"
+          }`}
+        >
+          {card.rank}
+          <span className="text-base">{card.suit}</span>
+        </div>
+      )}
+    </div>
+  );
+
   return (
-    <div className="flex flex-col items-center justify-center text-white mt-60">
-      <h1 className="text-4xl font-mono mb-6">Blackjack</h1>
-      <div className="flex space-x-10 mb-6">
-        <div className="flex flex-col items-center gap-3">
-          <h2 className="text-2xl mb-2">Dealer's Hand</h2>
-          <div className="flex gap-3 ring-2 ring-red-500 p-4 rounded-lg">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-green-800 text-white p-4">
+      <h1 className="text-4xl font-bold mb-8">Blackjack</h1>
+
+      <div className="w-full max-w-3xl bg-green-700 rounded-xl p-6 shadow-lg">
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold mb-2">Dealer</h2>
+          <div className="flex space-x-2">
             {dealerHand.map((card, index) => (
               <div
                 key={index}
-                className="py-2 px-4 bg-white text-xl text-red-500 font-mono rounded-xl"
+                className="transition-all duration-300 ease-in-out hover:transform hover:-translate-y-2"
               >
-                {card.rank}
+                {renderCard(
+                  card,
+                  index === 1 &&
+                    gameState !== "gameOver" &&
+                    gameState !== "dealerTurn"
+                )}
               </div>
             ))}
           </div>
+          <div className="mt-2 text-lg">
+            Score:{" "}
+            {gameState === "playerTurn"
+              ? calculateHandValue([dealerHand[0]])
+              : dealerScore}
+          </div>
         </div>
-        <div className="flex flex-col items-center gap-3">
-          <h2 className="text-2xl mb-2">Player's Hand</h2>
-          <div className="flex gap-3 ring-2 ring-blue-500 p-4 rounded-lg">
+
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold mb-2">Player</h2>
+          <div className="flex space-x-2">
             {playerHand.map((card, index) => (
               <div
                 key={index}
-                className="py-2 px-4 bg-white text-xl text-blue-500 font-mono rounded-xl"
+                className="transition-all duration-300 ease-in-out hover:transform hover:-translate-y-2"
               >
-                {card.rank}
+                {renderCard(card)}
               </div>
             ))}
           </div>
+          <div className="mt-2 text-lg">Score: {playerScore}</div>
         </div>
-      </div>
-      <div className="flex gap-6 mb-6">
-        <button
-          className="px-6 py-3 bg-green-500 rounded-xl font-mono text-lg"
-          onClick={() => ifPlayerHits(1)}
-        >
-          Hit
-        </button>
-        <button
-          className="px-6 py-3 bg-yellow-500 rounded-xl font-mono text-lg"
-          onClick={ifPlayerStays}
-        >
-          Stay
-        </button>
-      </div>
-      <div className="flex gap-6">
-        <button
-          className="px-6 py-3 bg-purple-500 rounded-xl font-mono text-lg"
-          onClick={() => ifPlayerHits(1)}
-        >
-          Deal Player
-        </button>
-        <button
-          className="px-6 py-3 bg-red-500 rounded-xl font-mono text-lg"
-          onClick={() => ifPlayerHits(0)}
-        >
-          Deal Dealer
-        </button>
+
+        {gameState === "playerTurn" && (
+          <div className="flex justify-center space-x-4 mb-4">
+            <button
+              className="px-6 py-2 bg-red-500 hover:bg-red-600 rounded-full font-semibold transition-colors duration-300"
+              onClick={ifPlayerHits}
+            >
+              Hit
+            </button>
+            <button
+              className="px-6 py-2 bg-yellow-500 hover:bg-yellow-600 rounded-full font-semibold transition-colors duration-300"
+              onClick={ifPlayerStays}
+            >
+              Stand
+            </button>
+          </div>
+        )}
+
+        {gameResult && (
+          <div className="text-center mb-4">
+            <div className="text-2xl font-bold">{gameResult}</div>
+          </div>
+        )}
+
+        <div className="flex justify-center">
+          <button
+            className="px-6 py-2 bg-blue-500 hover:bg-blue-600 rounded-full font-semibold transition-colors duration-300 flex items-center"
+            onClick={initialDeal}
+          >
+            New Game <ArrowRight className="ml-2" size={20} />
+          </button>
+        </div>
       </div>
     </div>
   );
