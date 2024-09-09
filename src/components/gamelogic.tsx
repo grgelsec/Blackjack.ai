@@ -18,7 +18,6 @@ export default function BlackjackGame() {
   const [playerScore, setPlayerScore] = useState<number>(0);
   const [dealerScore, setDealerScore] = useState<number>(0);
   const [input, setInput] = useState<string>("");
-  const { response } = useAI(input);
 
   useEffect(() => {
     initializeDeck();
@@ -75,9 +74,6 @@ export default function BlackjackGame() {
   };
 
   const initialDeal = async () => {
-    setInput(
-      "The player hit new game, this is your alert, please give them a run down of their options to hit or to stand."
-    );
     let newDeck = shuffleDeck([...deck]);
     const newPlayerHand: PlayingCard[] = [];
     const newDealerHand: PlayingCard[] = [];
@@ -106,6 +102,9 @@ export default function BlackjackGame() {
     if (playerValue === 21) {
       endGame("Blackjack! Player Wins!");
     }
+    setInput(
+      "The player hit new game, this is your alert, please give them a run down of their options to hit or to stand."
+    );
   };
 
   const calculateHandValue = (hand: PlayingCard[]) => {
@@ -130,21 +129,24 @@ export default function BlackjackGame() {
       setDeck(updatedDeck);
       const handValue = calculateHandValue(newHand);
       setPlayerScore(handValue);
-      setInput(
-        `The players hand value is ${playerScore}, what would you advise the to do?`
-      );
       if (handValue === 21) {
         endGame("Player hits 21! Player Wins!");
       } else if (handValue > 21) {
         endGame("Player Busts! Dealer Wins!");
       }
     }
+    setInput(
+      `The players has 'hit', if they did not bust advise them on what to do next.`
+    );
   };
 
   const ifPlayerStays = () => {
     if (gameState === "playerTurn") {
       dealerTurn();
     }
+    setInput(
+      `The players has 'stay' and their hand value is ${playerScore}, if they did not win after the dealer turn advise them on what to do next.`
+    );
   };
 
   const dealerTurn = () => {
@@ -177,19 +179,22 @@ export default function BlackjackGame() {
 
     if (dealerTotal > 21) {
       endGame("Dealer Busts! Player Wins!");
+      setInput("Dealer Busts! Player Wins!");
     } else if (playerTotal > dealerTotal) {
       endGame("Player Wins!");
+      setInput("Player Wins!");
     } else if (dealerTotal > playerTotal) {
       endGame("Dealer Wins!");
+      setInput("Dealer Wins!");
     } else {
       endGame("It's a tie!");
+      setInput("It's a tie!");
     }
   };
 
   const endGame = (result: string) => {
     setGameState("gameOver");
     setGameResult(result);
-    setInput(gameResult);
   };
 
   const renderCard = (card: PlayingCard, hidden: boolean = false) => (
@@ -214,6 +219,8 @@ export default function BlackjackGame() {
       )}
     </div>
   );
+
+  const { response } = useAI(input);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen w-full bg-gradient-to-br from-emerald-900 to-emerald-700 text-gray-200 p-4 font-mono space-y-10">

@@ -18,7 +18,7 @@ const useAI = (query: string) => {
             {
               role: "system",
               content:
-                "Please only use words, no symbols. You are a Blackjack coach. Before the player hits 'New Game' please give them a concise run down of the base game rules of blackjack. Once the player has hit new game, you will be alerted and only until then will you do what the next sentence says. Please keep your responses very concise.",
+                "Please only use words, no symbols. You are a Blackjack coach. Before the player hits 'New Game' please give them a concise run down of the base game rules of blackjack. Once the player has hit new game, you will be alerted and only until then will you do what the next sentence says. Please keep your responses very concise. Once you have recieved who has won or busted or lost, the game is over acknowledge the end game result and tell them to ht new game if they want to play again. Don't talk about 'push'",
             },
             {
               role: "user",
