@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { ArrowRight, Square } from "lucide-react";
-
+import useAI from "../hooks/fetchOpenAPI";
 type PlayingCard = {
   rank: string;
   suit: string;
@@ -20,7 +20,7 @@ export default function BlackjackGame() {
 
   useEffect(() => {
     initializeDeck();
-  });
+  }, []);
 
   const initializeDeck = () => {
     const suits = ["♠", "♥", "♦", "♣"];
@@ -205,6 +205,9 @@ export default function BlackjackGame() {
       )}
     </div>
   );
+
+  const { response } = useAI("what is your name");
+  console.log(response);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-green-800 text-white p-4">

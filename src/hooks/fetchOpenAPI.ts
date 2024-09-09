@@ -1,21 +1,39 @@
 import OpenAI from "openai";
-const openai = new OpenAI({
-  apiKey: import.meta.env.VITE_OPENAPI,
-});
+import { ChatCompletion } from "openai/resources";
+import { ChatCompletionMessage } from "openai/src/resources";
+import { useEffect, useState } from "react";
 
-async function main() {
-  const completion = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
-    messages: [
-      { role: "system", content: "You are a helpful assistant." },
-      {
-        role: "user",
-        content: "Write a haiku about recursion in programming.",
-      },
-    ],
-  });
+const useAI = (query: string) => {
+  const [response, setResponse] = useState<ChatCompletionMessage>();
 
-  console.log(completion.choices[0].message);
-}
+  useEffect(() => {
+    const getResponse = async () => {
+      const openai = new OpenAI({
+        apiKey: import.meta.env.VITE_OPENAPI,
+        dangerouslyAllowBrowser: true,
+      });
+      try {
+        const response = await openai.chat.completions.create({
+          model: "gpt-4o-mini",
+          messages: [
+            { role: "system", content: "You are a helpful assistant." },
+            {
+              role: "user",
+              content: `${query}`,
+            },
+          ],
+        });
 
-main();
+        const data = await response.choices[0].message;
+        setResponse(data);
+      } catch (error) {
+        console.log("Error occorued: ", error);
+      }
+    };
+    getResponse();
+  }, [query]);
+
+  return { response };
+};
+
+export default useAI;
