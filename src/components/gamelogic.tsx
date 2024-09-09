@@ -17,6 +17,8 @@ export default function BlackjackGame() {
   const [gameResult, setGameResult] = useState<string>("");
   const [playerScore, setPlayerScore] = useState<number>(0);
   const [dealerScore, setDealerScore] = useState<number>(0);
+  const [input, setInput] = useState<string>("");
+  const { response } = useAI(input);
 
   useEffect(() => {
     initializeDeck();
@@ -72,7 +74,10 @@ export default function BlackjackGame() {
     return [drawnCard, updatedDeck];
   };
 
-  const initialDeal = () => {
+  const initialDeal = async () => {
+    setInput(
+      "The player hit new game, this is your alert, please give them a run down of their options to hit or to stand."
+    );
     let newDeck = shuffleDeck([...deck]);
     const newPlayerHand: PlayingCard[] = [];
     const newDealerHand: PlayingCard[] = [];
@@ -125,6 +130,9 @@ export default function BlackjackGame() {
       setDeck(updatedDeck);
       const handValue = calculateHandValue(newHand);
       setPlayerScore(handValue);
+      setInput(
+        `The players hand value is ${playerScore}, what would you advise the to do?`
+      );
       if (handValue === 21) {
         endGame("Player hits 21! Player Wins!");
       } else if (handValue > 21) {
@@ -181,42 +189,49 @@ export default function BlackjackGame() {
   const endGame = (result: string) => {
     setGameState("gameOver");
     setGameResult(result);
+    setInput(gameResult);
   };
 
   const renderCard = (card: PlayingCard, hidden: boolean = false) => (
     <div
-      className={`w-16 h-24 rounded-lg flex items-center justify-center ${
-        hidden ? "bg-blue-500" : "bg-white"
+      className={`w-16 h-24 md:w-20 md:h-28 rounded-lg flex items-center justify-center ${
+        hidden ? "bg-emerald-700" : "bg-gray-200"
       } shadow-md`}
     >
       {hidden ? (
         <div className="w-full h-full flex items-center justify-center">
-          <Square className="text-white" size={32} />
+          <Square className="text-emerald-500" size={32} />
         </div>
       ) : (
         <div
-          className={`text-2xl font-bold ${
-            ["♥", "♦"].includes(card.suit) ? "text-red-500" : "text-black"
+          className={`text-2xl md:text-3xl font-bold ${
+            ["♥", "♦"].includes(card.suit) ? "text-red-500" : "text-gray-800"
           }`}
         >
           {card.rank}
-          <span className="text-base">{card.suit}</span>
+          <span className="text-base md:text-lg">{card.suit}</span>
         </div>
       )}
     </div>
   );
 
-  const { response } = useAI("what is your name");
-  console.log(response);
-
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-green-800 text-white p-4">
-      <h1 className="text-4xl font-bold mb-8">Blackjack</h1>
-
-      <div className="w-full max-w-3xl bg-green-700 rounded-xl p-6 shadow-lg">
+    <div className="flex flex-col items-center justify-center min-h-screen w-full bg-gradient-to-br from-emerald-900 to-emerald-700 text-gray-200 p-4 font-mono space-y-10">
+      <h1 className="text-4xl md:text-6xl font-bold mb-8 text-emerald-200">
+        Blackjack
+      </h1>
+      <div className="w-full max-w-6xl bg-emerald-800 rounded-xl p-4 md:p-8 shadow-lg border border-emerald-600">
+        <h1 className="flex justify-center w-full text-xl md:text-2xl font-semibold mb-2 text-emerald-300">
+          Coach
+        </h1>
+        <p>{response}</p>
+      </div>
+      <div className="w-full max-w-6xl bg-emerald-800 rounded-xl p-4 md:p-8 shadow-lg border border-emerald-600">
         <div className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">Dealer</h2>
-          <div className="flex space-x-2">
+          <h2 className="text-xl md:text-2xl font-semibold mb-2 text-emerald-300">
+            Dealer
+          </h2>
+          <div className="flex flex-wrap justify-center gap-2">
             {dealerHand.map((card, index) => (
               <div
                 key={index}
@@ -231,7 +246,7 @@ export default function BlackjackGame() {
               </div>
             ))}
           </div>
-          <div className="mt-2 text-lg">
+          <div className="mt-2 text-lg md:text-xl">
             Score:{" "}
             {gameState === "playerTurn"
               ? calculateHandValue([dealerHand[0]])
@@ -240,8 +255,10 @@ export default function BlackjackGame() {
         </div>
 
         <div className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">Player</h2>
-          <div className="flex space-x-2">
+          <h2 className="text-xl md:text-2xl font-semibold mb-2 text-emerald-300">
+            Player
+          </h2>
+          <div className="flex flex-wrap justify-center gap-2">
             {playerHand.map((card, index) => (
               <div
                 key={index}
@@ -251,19 +268,19 @@ export default function BlackjackGame() {
               </div>
             ))}
           </div>
-          <div className="mt-2 text-lg">Score: {playerScore}</div>
+          <div className="mt-2 text-lg md:text-xl">Score: {playerScore}</div>
         </div>
 
         {gameState === "playerTurn" && (
           <div className="flex justify-center space-x-4 mb-4">
             <button
-              className="px-6 py-2 bg-red-500 hover:bg-red-600 rounded-full font-semibold transition-colors duration-300"
+              className="px-6 py-2 bg-red-600 hover:bg-red-700 rounded-full font-semibold transition-colors duration-300 text-lg md:text-xl"
               onClick={ifPlayerHits}
             >
               Hit
             </button>
             <button
-              className="px-6 py-2 bg-yellow-500 hover:bg-yellow-600 rounded-full font-semibold transition-colors duration-300"
+              className="px-6 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-full font-semibold transition-colors duration-300 text-lg md:text-xl"
               onClick={ifPlayerStays}
             >
               Stand
@@ -273,13 +290,15 @@ export default function BlackjackGame() {
 
         {gameResult && (
           <div className="text-center mb-4">
-            <div className="text-2xl font-bold">{gameResult}</div>
+            <div className="text-2xl md:text-3xl font-bold text-emerald-200">
+              {gameResult}
+            </div>
           </div>
         )}
 
         <div className="flex justify-center">
           <button
-            className="px-6 py-2 bg-blue-500 hover:bg-blue-600 rounded-full font-semibold transition-colors duration-300 flex items-center"
+            className="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 rounded-full font-semibold transition-colors duration-300 flex items-center text-lg md:text-xl"
             onClick={initialDeal}
           >
             New Game <ArrowRight className="ml-2" size={20} />
