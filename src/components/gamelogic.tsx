@@ -255,7 +255,7 @@ export default function BlackjackGame() {
               </div>
             ))}
           </div>
-          <div className="text-lg md:text-xl text-center">
+          <div className="text-lg md:text-xl text-center text-emerald-500 font-bold">
             Score:{" "}
             <span className="font-bold text-emerald-400">
               {gameState === "playerTurn"
@@ -279,7 +279,7 @@ export default function BlackjackGame() {
               </div>
             ))}
           </div>
-          <div className="text-lg md:text-xl text-center">
+          <div className="text-lg md:text-xl text-center text-emerald-500 font-bold">
             Score:{" "}
             <span className="font-bold text-emerald-400">{playerScore}</span>
           </div>
