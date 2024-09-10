@@ -237,98 +237,94 @@ export default function BlackjackGame() {
       <h1 className="text-4xl md:text-6xl font-bold mb-8 bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-500 text-transparent bg-clip-text pb-2">
         Blackjack
       </h1>
-      <div className="w-full max-w-6xl bg-codblack rounded-xl p-6 md:p-10 shadow-[0_0_15px_rgba(16,185,129,0.1)] border border-emerald-900">
-        <div className="bg-black bg-opacity-50 rounded-lg p-4 md:p-6 shadow-inner">
-          <h2 className="flex justify-center w-full text-xl md:text-2xl font-semibold mb-4 text-emerald-400">
-            Coach
-          </h2>
-          <p className="text-center text-gray-300">{response}</p>
-        </div>
+      <div className="w-full max-w-6xl bg-codblack rounded-xl p-6 md:p-8 shadow-lg border border-emerald-600 shadow-emerald-500">
+        <h2 className="flex justify-center w-full text-xl md:text-2xl font-semibold mb-4 text-emerald-400">
+          Coach
+        </h2>
+        <p className="text-center text-gray-300">{response}</p>
       </div>
-      <div className="w-full max-w-6xl bg-codblack rounded-xl p-6 md:p-10 shadow-[0_0_15px_rgba(16,185,129,0.1)] border border-emerald-900">
-        <div className="bg-black bg-opacity-50 rounded-lg p-4 md:p-6 shadow-inner">
-          <div className="mb-8">
-            <h2 className="text-xl md:text-2xl font-semibold mb-4 text-emerald-400 text-center">
-              Dealer
-            </h2>
-            <div className="flex flex-wrap justify-center gap-2 mb-4">
-              {dealerHand.map((card, index) => (
-                <div
-                  key={index}
-                  className="transition-all duration-300 ease-in-out hover:transform hover:-translate-y-2"
-                >
-                  {renderCard(
-                    card,
-                    index === 1 &&
-                      gameState !== "gameOver" &&
-                      gameState !== "dealerTurn"
-                  )}
-                </div>
-              ))}
-            </div>
-            <div className="text-lg md:text-xl text-center text-emerald-500 font-bold">
-              Score:{" "}
-              <span className="font-bold text-emerald-400">
-                {gameState === "playerTurn"
-                  ? calculateHandValue([dealerHand[0]])
-                  : dealerScore}
-              </span>
-            </div>
-          </div>
-
-          <div className="mb-8">
-            <h2 className="text-xl md:text-2xl font-semibold mb-4 text-emerald-400 text-center">
-              Player
-            </h2>
-            <div className="flex flex-wrap justify-center gap-2 mb-4">
-              {playerHand.map((card, index) => (
-                <div
-                  key={index}
-                  className="transition-all duration-300 ease-in-out hover:transform hover:-translate-y-2"
-                >
-                  {renderCard(card)}
-                </div>
-              ))}
-            </div>
-            <div className="text-lg md:text-xl text-center text-emerald-500 font-bold">
-              Score:{" "}
-              <span className="font-bold text-emerald-400">{playerScore}</span>
-            </div>
-          </div>
-
-          {gameState === "playerTurn" && (
-            <div className="flex justify-center space-x-4 mb-6 text-white">
-              <button
-                className="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 rounded-full font-semibold transition-colors duration-300 text-lg md:text-xl"
-                onClick={ifPlayerHits}
+      <div className="w-full max-w-6xl bg-codblack rounded-xl p-6 md:p-8 shadow-lg border border-emerald-600 shadow-emerald-500">
+        <div className="mb-8">
+          <h2 className="text-xl md:text-2xl font-semibold mb-4 text-emerald-400 text-center">
+            Dealer
+          </h2>
+          <div className="flex flex-wrap justify-center gap-2 mb-4">
+            {dealerHand.map((card, index) => (
+              <div
+                key={index}
+                className="transition-all duration-300 ease-in-out hover:transform hover:-translate-y-2"
               >
-                Hit
-              </button>
-              <button
-                className="px-6 py-2 bg-gray-600 hover:bg-gray-700 rounded-full font-semibold transition-colors duration-300 text-lg md:text-xl"
-                onClick={ifPlayerStays}
-              >
-                Stand
-              </button>
-            </div>
-          )}
-
-          {gameResult && (
-            <div className="text-center mb-6">
-              <div className="text-2xl md:text-3xl font-bold text-emerald-400">
-                {gameResult}
+                {renderCard(
+                  card,
+                  index === 1 &&
+                    gameState !== "gameOver" &&
+                    gameState !== "dealerTurn"
+                )}
               </div>
-            </div>
-          )}
+            ))}
+          </div>
+          <div className="text-lg md:text-xl text-center text-emerald-500 font-bold">
+            Score:{" "}
+            <span className="font-bold text-emerald-400">
+              {gameState === "playerTurn"
+                ? calculateHandValue([dealerHand[0]])
+                : dealerScore}
+            </span>
+          </div>
+        </div>
 
-          <div className="flex justify-center">
+        <div className="mb-8">
+          <h2 className="text-xl md:text-2xl font-semibold mb-4 text-emerald-400 text-center">
+            Player
+          </h2>
+          <div className="flex flex-wrap justify-center gap-2 mb-4">
+            {playerHand.map((card, index) => (
+              <div
+                key={index}
+                className="transition-all duration-300 ease-in-out hover:transform hover:-translate-y-2"
+              >
+                {renderCard(card)}
+              </div>
+            ))}
+          </div>
+          <div className="text-lg md:text-xl text-center text-emerald-500 font-bold">
+            Score:{" "}
+            <span className="font-bold text-emerald-400">{playerScore}</span>
+          </div>
+        </div>
+
+        {gameState === "playerTurn" && (
+          <div className="flex justify-center space-x-4 mb-6">
             <button
-              className="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 rounded-full font-semibold transition-colors duration-300 flex items-center text-lg md:text-xl text-white"
-              onClick={initialDeal}
+              className="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 rounded-full font-semibold transition-colors duration-300 text-lg md:text-xl"
+              onClick={ifPlayerHits}
             >
-              New Game <ArrowRight className="ml-2" size={20} />
+              Hit
+            </button>
+            <button
+              className="px-6 py-2 bg-gray-600 hover:bg-gray-700 rounded-full font-semibold transition-colors duration-300 text-lg md:text-xl"
+              onClick={ifPlayerStays}
+            >
+              Stand
             </button>
           </div>
+        )}
+
+        {gameResult && (
+          <div className="text-center mb-6">
+            <div className="text-2xl md:text-3xl font-bold text-emerald-400">
+              {gameResult}
+            </div>
+          </div>
+        )}
+
+        <div className="flex justify-center">
+          <button
+            className="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 rounded-full font-semibold transition-colors duration-300 flex items-center text-lg md:text-xl"
+            onClick={initialDeal}
+          >
+            New Game <ArrowRight className="ml-2" size={20} />
+          </button>
         </div>
       </div>
     </div>
