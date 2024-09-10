@@ -17,7 +17,9 @@ export default function BlackjackGame() {
   const [gameResult, setGameResult] = useState<string>("");
   const [playerScore, setPlayerScore] = useState<number>(0);
   const [dealerScore, setDealerScore] = useState<number>(0);
-  const [input, setInput] = useState<string>("");
+  const [input, setInput] = useState<string>(
+    "Hello, please explain the rules, concisely. Make sure you cover what it means to hit and stand."
+  );
 
   useEffect(() => {
     initializeDeck();
@@ -102,9 +104,15 @@ export default function BlackjackGame() {
     if (playerValue === 21) {
       endGame("Blackjack! Player Wins!");
     }
+
     setInput(
-      "The player hit new game, this is your alert, please give them a run down of their options to hit or to stand."
+      `The game has start and the initial score of the player's hand is ${playerValue} and the initial score of the dealers hand is ${calculateHandValue(
+        [newDealerHand[0]]
+      )}, please make note of the scores and advise the player on what to do next. Dont go over hit and stand again, just tell them what the best option would be.`
     );
+
+    console.log(dealerScore);
+    console.log(playerScore);
   };
 
   const calculateHandValue = (hand: PlayingCard[]) => {
@@ -135,18 +143,12 @@ export default function BlackjackGame() {
         endGame("Player Busts! Dealer Wins!");
       }
     }
-    setInput(
-      `The players has 'hit', if they did not bust advise them on what to do next.`
-    );
   };
 
   const ifPlayerStays = () => {
     if (gameState === "playerTurn") {
       dealerTurn();
     }
-    setInput(
-      `The players has 'stay' and their hand value is ${playerScore}, if they did not win after the dealer turn advise them on what to do next.`
-    );
   };
 
   const dealerTurn = () => {
