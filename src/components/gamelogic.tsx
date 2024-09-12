@@ -18,7 +18,7 @@ export default function BlackjackGame() {
   const [playerScore, setPlayerScore] = useState<number>(0);
   const [dealerScore, setDealerScore] = useState<number>(0);
   const [input, setInput] = useState<string>(
-    "Hello, please explain the rules, concisely. Make sure you cover what it means to hit and stand."
+    "Hello, please explain the rules, concisely. Make sure you cover what it means to hit and stand.",
   );
 
   useEffect(() => {
@@ -68,7 +68,7 @@ export default function BlackjackGame() {
   };
 
   const drawCard = (
-    currentDeck: PlayingCard[]
+    currentDeck: PlayingCard[],
   ): [PlayingCard, PlayingCard[]] => {
     const updatedDeck = [...currentDeck];
     const drawnCard = updatedDeck.pop()!;
@@ -108,8 +108,8 @@ export default function BlackjackGame() {
 
     setInput(
       `The game has start and the initial score of the player's hand is ${playerValue} and the initial score of the dealers hand is ${calculateHandValue(
-        [newDealerHand[0]]
-      )}, please make note of the scores and advise the player on what to do next. Dont go over hit and stand again, just tell them what the best option would be.`
+        [newDealerHand[0]],
+      )}, please make note of the scores and advise the player on what to do next. Dont go over hit and stand again, just tell them what the best option would be.`,
     );
   };
 
@@ -138,7 +138,7 @@ export default function BlackjackGame() {
       console.log(handValue);
       //console.log("Dealer score:", dealerScore);
       setInput(
-        `The player's score is ${handValue} and the dealer's score is ${dealerScore}, please make note of the scores and advise the player on what to do next. Dont go over hit and stand again, just tell them what the best option would be.`
+        `The player's score is ${handValue} and the dealer's score is ${dealerScore}, please make note of the scores and advise the player on what to do next. Dont go over hit and stand again, just tell them what the best option would be.`,
       );
       if (handValue === 21) {
         endGame("Player hits 21! Player Wins!");
@@ -152,7 +152,7 @@ export default function BlackjackGame() {
 
   const ifPlayerStays = () => {
     setInput(
-      `The player's score is ${playerScore} and the dealer's score is ${dealerScore}, please make note of the scores and advise the player on what to do next. Dont go over hit and stand again, just tell them what the best option would be.`
+      `The player's score is ${playerScore} and the dealer's score is ${dealerScore}, please make note of the scores and advise the player on what to do next. Dont go over hit and stand again, just tell them what the best option would be.`,
     );
     if (gameState === "playerTurn") {
       dealerTurn();
@@ -258,7 +258,7 @@ export default function BlackjackGame() {
                   card,
                   index === 1 &&
                     gameState !== "gameOver" &&
-                    gameState !== "dealerTurn"
+                    gameState !== "dealerTurn",
                 )}
               </div>
             ))}
